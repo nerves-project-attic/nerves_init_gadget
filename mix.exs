@@ -34,6 +34,8 @@ defmodule NervesInitZero.Mixfile do
   defp deps do
     [{:nerves_runtime, "~> 0.3"},
      {:nerves_network, github: "nerves-project/nerves_network"},
+     {:nerves_firmware_http, github: "nerves-project/nerves_firmware_http", branch: "target"},
+     {:exjsx, "~> 4.0"},
      {:mdns, github: "mobileoverlord/mdns", branch: "linklocal"}]
   end
 end
