@@ -33,7 +33,7 @@ defmodule NervesInitZero.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:nerves_runtime, "~> 0.3"},
-     {:nerves_network, git: "https://github.com/nerves-project/nerves_network.git", branch: "master"},
-     {:mdns, "~> 0.1.5"}]
+     {:nerves_network, github: "nerves-project/nerves_network"},
+     {:mdns, github: "mobileoverlord/mdns", branch: "linklocal"}]
   end
 end

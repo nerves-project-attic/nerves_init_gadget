@@ -1,0 +1,9 @@
+%{"dns": {:hex, :dns, "0.0.4", "2e347a0a03e8345bc70c6d69ed08788103a3bec81b93e4636b1b432110835436", [:mix], [{:socket, "~> 0.3.5", [hex: :socket, optional: false]}]},
+  "elixir_make": {:hex, :elixir_make, "0.4.0", "992f38fabe705bb45821a728f20914c554b276838433349d4f2341f7a687cddf", [:mix], []},
+  "mdns": {:git, "https://github.com/mobileoverlord/mdns.git", "5dca36b43f0ee29a29d0686e0590bf552dc00a6c", [branch: "linklocal"]},
+  "nerves_network": {:git, "https://github.com/nerves-project/nerves_network.git", "d7c6a83ea05759249f9006965bbc00d91621188e", []},
+  "nerves_network_interface": {:hex, :nerves_network_interface, "0.4.0", "a8e7662cd56fb4fe9060c891d35c43bbbff692ee6fd2d5efd538717da0cd96b8", [:make, :mix], [{:elixir_make, "~> 0.3", [hex: :elixir_make, optional: false]}]},
+  "nerves_runtime": {:hex, :nerves_runtime, "0.3.1", "3eddfde56066892d968bf6102439ee33c12c97a03f6baf5ed43a385757f50d57", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, optional: false]}, {:system_registry, "~> 0.3.0", [hex: :system_registry, optional: false]}]},
+  "nerves_wpa_supplicant": {:hex, :nerves_wpa_supplicant, "0.3.0", "dfda748df2662e1e9e95df6662c3a512d371ef23359b2c090b9c8c884b236a3d", [:make, :mix], [{:elixir_make, "~> 0.3", [hex: :elixir_make, optional: false]}]},
+  "socket": {:hex, :socket, "0.3.12", "4a6543815136503fee67eff0932da1742fad83f84c49130c854114153cc549a6", [:mix], []},
+  "system_registry": {:hex, :system_registry, "0.3.0", "31a748d0445984622359b901f2b4cdcd25457eeee9be881310590e3cd553f017", [:mix], []}}
