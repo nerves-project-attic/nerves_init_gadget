@@ -41,14 +41,10 @@ defmodule Nerves.InitZero.NetworkManager do
       String.split(ip, ".")
       |> Enum.map(&parse_int/1)
       |> List.to_tuple
-    :ok = Mdns.Server.start(multicast_if: ip)
-    :ok = Mdns.Server.set_ip(ip)
-    :ok = Mdns.Server.add_service(%Mdns.Server.Service{
-      domain: "zero.local",
-      data: :ip,
-      ttl: 120,
-      type: :a
-    })
+
+    Mdns.Server.stop()
+    Mdns.Server.start(interface: ip)
+    Mdns.Server.set_ip(ip)
   end
 
   defp scope(iface, append) do

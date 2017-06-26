@@ -18,7 +18,12 @@ defmodule Nerves.InitZero.Application do
 
     # Start link-local networking going on the USB interface
     Nerves.Network.setup @interface, ipv4_address_method: :linklocal
-    
+    Mdns.Server.add_service(%Mdns.Server.Service{
+      domain: "zero.local",
+      data: :ip,
+      ttl: 120,
+      type: :a
+    })
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Nerves.InitZero.Supervisor]
