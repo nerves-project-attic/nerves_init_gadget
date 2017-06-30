@@ -1,7 +1,6 @@
-defmodule Nerves.InitZero.Application do
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
+defmodule Nerves.InitGadget.Application do
   @moduledoc false
+
   @interface "usb0"
 
   use Application
@@ -11,22 +10,19 @@ defmodule Nerves.InitZero.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
-      # Starts a worker by calling: NervesInitZero.Worker.start_link(arg1, arg2, arg3)
-      # worker(NervesInitZero.Worker, [arg1, arg2, arg3]),
-      worker(Nerves.InitZero.NetworkManager, [@interface])
+      worker(Nerves.InitGadget.NetworkManager, [@interface])
     ]
 
     # Start link-local networking going on the USB interface
     Nerves.Network.setup @interface, ipv4_address_method: :linklocal
     Mdns.Server.add_service(%Mdns.Server.Service{
-      domain: "zero.local",
+      domain: "nerves.local",
       data: :ip,
       ttl: 120,
       type: :a
     })
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Nerves.InitZero.Supervisor]
+
+    opts = [strategy: :one_for_one, name: Nerves.InitGadget.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

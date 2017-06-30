@@ -1,10 +1,10 @@
-defmodule NervesInitZero.Mixfile do
+defmodule Nerves.InitGadget.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :nerves_init_zero,
-     name: "Nerves Init Zero",
-     description: "Easy Nerves base setup of a Raspberry Pi Zero",
+    [app: :nerves_init_gadget,
+     name: "Nerves Init Gadget",
+     description: "Easy Nerves initialization for devices with USB gadget interfaces",
      author: "Frank Hunleth",
      version: "0.1.0",
      elixir: "~> 1.4",
@@ -19,7 +19,7 @@ defmodule NervesInitZero.Mixfile do
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [:logger],
-     mod: {Nerves.InitZero.Application, []}]
+     mod: {Nerves.InitGadget.Application, []}]
   end
 
   # Dependencies can be Hex packages:

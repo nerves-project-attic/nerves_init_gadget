@@ -1,5 +1,5 @@
-defmodule Nerves.InitZero do
+defmodule Nerves.InitGadget do
   @moduledoc """
-  Documentation for Nerves.InitZero.
+  Documentation for Nerves.InitGadget.
   """
 end

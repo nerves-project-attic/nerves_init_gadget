@@ -1,4 +1,4 @@
-defmodule Nerves.InitZero.NetworkManager do
+defmodule Nerves.InitGadget.NetworkManager do
   use GenServer
 
   require Logger
