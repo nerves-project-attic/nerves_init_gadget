@@ -46,12 +46,6 @@ Finally, add the following configuration to your `config/config.exs` (replace
 `:your_app)`:
 
 ```elixir
-config :system_registry, SystemRegistry.Processor.Config,
-  priorities: [
-        :debug,
-        :nerves_network
-    ]
-
 # Boot the bootloader first and have it start our app.
 config :bootloader,
   init: [:nerves_init_zero],
