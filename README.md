@@ -48,7 +48,7 @@ Finally, add the following configuration to your `config/config.exs` (replace
 ```elixir
 # Boot the bootloader first and have it start our app.
 config :bootloader,
-  init: [:nerves_init_zero],
+  init: [:nerves_init_gadget],
   app: :your_app
 ```
 
