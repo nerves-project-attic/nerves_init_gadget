@@ -42,7 +42,7 @@ release :your_app do
 end
 ```
 
-Finally, add the following configuration to your `config/config.exs` (replace
+Now add the following configuration to your `config/config.exs` (replace
 `:your_app)`:
 
 ```elixir
@@ -50,6 +50,20 @@ Finally, add the following configuration to your `config/config.exs` (replace
 config :bootloader,
   init: [:nerves_init_gadget],
   app: :your_app
+```
+
+The final configuration is item is to set up authorized keys for pushing firmware
+updates to the device. This is documented in more detail at [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh).
+Basically the device will need to know the `ssh` public keys for all of the users
+that are allowed to update the firmware. Copy the contents of the `id_rsa.pub`, etc.
+files from your `~/.ssh` directory here like this:
+
+```
+config :nerves_firmware_ssh,
+  authorized_keys: """
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDBCdMwNo0xOE86il0DB2Tq4RCv07XvnV7W1uQBlOOE0ZZVjxmTIOiu8XcSLy0mHj11qX5pQH3Th6Jmyqdj
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCaf37TM8GfNKcoDjoewa6021zln4GvmOiXqW6SRpF61uNWZXurPte1u8frrJX1P/hGxCL7YN3cV6eZqRiF
+  """
 ```
 
 That's it! Run `mix deps.get` and `mix firmware` like usual and copy the new
@@ -71,6 +85,6 @@ To update firmware from now on, just run the following:
 $ mix firmware.push nerves.local
 ```
 
-Assuming everything completes succesfully, the device will reboot with the new
+Assuming everything completes successfully, the device will reboot with the new
 firmware.
 
