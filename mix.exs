@@ -35,6 +35,6 @@ defmodule Nerves.InitGadget.Mixfile do
     [{:nerves_runtime, "~> 0.3"},
      {:nerves_network, github: "nerves-project/nerves_network"},
      {:nerves_firmware_ssh, "~> 0.1"},
-     {:mdns, github: "mobileoverlord/mdns", branch: "linklocal"}]
+     {:mdns, "~> 0.1"}]
   end
 end

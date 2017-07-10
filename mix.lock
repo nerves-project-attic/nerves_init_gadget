@@ -1,6 +1,6 @@
-%{"dns": {:git, "https://github.com/mobileoverlord/elixir-dns.git", "3db4662cd79148f31b7b93712423b8316b32b105", [branch: "v0.1.0"]},
+%{"dns": {:hex, :dns, "1.0.1", "1d88187fdf564d937cee202949141090707fd0c9d7fcae903a6878ef24ef5d1e", [:mix], [{:socket, "~> 0.3.12", [hex: :socket, repo: "hexpm", optional: false]}], "hexpm"},
   "elixir_make": {:hex, :elixir_make, "0.4.0", "992f38fabe705bb45821a728f20914c554b276838433349d4f2341f7a687cddf", [:mix], [], "hexpm"},
-  "mdns": {:git, "https://github.com/mobileoverlord/mdns.git", "b738ac0861371c894196ab17a14a0cb34d23767e", [branch: "linklocal"]},
+  "mdns": {:hex, :mdns, "0.1.6", "b51b902b15b50e0e1522483c6a5fb073413e3d3d6ef52a44b93a541460b47d29", [:mix], [{:dns, "~> 1.0", [hex: :dns, repo: "hexpm", optional: false]}], "hexpm"},
   "nerves_firmware_ssh": {:hex, :nerves_firmware_ssh, "0.1.0", "5ac5c67757206ebc402fd47ca74100885247ef1e670f5dcd8d7b4324f5ae7d96", [:mix], [{:nerves_runtime, "~> 0.3", [hex: :nerves_runtime, repo: "hexpm", optional: false]}], "hexpm"},
   "nerves_network": {:git, "https://github.com/nerves-project/nerves_network.git", "d7c6a83ea05759249f9006965bbc00d91621188e", []},
   "nerves_network_interface": {:hex, :nerves_network_interface, "0.4.0", "a8e7662cd56fb4fe9060c891d35c43bbbff692ee6fd2d5efd538717da0cd96b8", [:make, :mix], [{:elixir_make, "~> 0.3", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
