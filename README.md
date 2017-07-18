@@ -8,7 +8,7 @@ interfaces like the Raspberry Pi Zero. Here are some features:
 * Sets up MDNS to respond to lookups for `nerves.local`
 * Pulls in the `nerves_runtime` initialization for things like mounting and
   fixing the application filesystem
-* Starts `nerves_firmware_http` so that push firmware updates work
+* Starts `nerves_firmware_ssh` so that push firmware updates work
 * If used with [bootloader](https://github.com/nerves-project/bootloader),
   crashes in your application's initialization won't break firmware updates
 
@@ -32,8 +32,8 @@ end
 ```
 
 Bootloader requires a plugin to the
-[distillery](https://github.com/bitwalker/distillery) configuration, so add
-it to your `rel/config.exs` (replace `:your_app`):
+[distillery](https://github.com/bitwalker/distillery) configuration, so add it
+to your `rel/config.exs` (replace `:your_app`):
 
 ```elixir
 release :your_app do
@@ -52,11 +52,12 @@ config :bootloader,
   app: :your_app
 ```
 
-The final configuration is item is to set up authorized keys for pushing firmware
-updates to the device. This is documented in more detail at [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh).
-Basically the device will need to know the `ssh` public keys for all of the users
-that are allowed to update the firmware. Copy the contents of the `id_rsa.pub`, etc.
-files from your `~/.ssh` directory here like this:
+The final configuration is item is to set up authorized keys for pushing
+firmware updates to the device. This is documented in more detail at
+[nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh).
+Basically the device will need to know the `ssh` public keys for all of the
+users that are allowed to update the firmware. Copy the contents of the
+`id_rsa.pub`, etc.  files from your `~/.ssh` directory here like this:
 
 ```
 config :nerves_firmware_ssh,
@@ -82,9 +83,9 @@ $ ping nerves.local
 To update firmware from now on, just run the following:
 
 ```
-$ mix firmware.push nerves.local
+$ MIX_TARGET=rpi0 mix firmware.push nerves.local
 ```
 
-Assuming everything completes successfully, the device will reboot with the new
-firmware.
+Change `MIX_TARGET` to whatever you're using to build the firmware.  Assuming
+everything completes successfully, the device will reboot with the new firmware.
 
