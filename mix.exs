@@ -33,8 +33,8 @@ defmodule Nerves.InitGadget.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:nerves_runtime, "~> 0.3"},
-     {:nerves_network, github: "nerves-project/nerves_network"},
-     {:nerves_firmware_ssh, "~> 0.1"},
+     {:nerves_network, "~> 0.3"},
+     {:nerves_firmware_ssh, "~> 0.2"},
      {:mdns, "~> 0.1"}]
   end
 end
