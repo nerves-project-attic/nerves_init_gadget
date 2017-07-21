@@ -5,7 +5,7 @@ interfaces like the Raspberry Pi Zero. Here are some features:
 
 * Automatically sets up link local networking on the USB interface. No DHCP or
   static IP setup needed on the host laptop
-* Sets up MDNS to respond to lookups for `nerves.local`
+* Sets up mDNS to respond to lookups for `nerves.local`
 * Pulls in the `nerves_runtime` initialization for things like mounting and
   fixing the application filesystem
 * Starts `nerves_firmware_ssh` so that push firmware updates work

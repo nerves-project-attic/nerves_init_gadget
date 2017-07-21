@@ -35,7 +35,7 @@ defmodule Nerves.InitGadget.NetworkManager do
   # end
 
   defp configure_mdns(ip) do
-    Logger.debug "Reconfiguring MDNS IP: #{inspect ip}"
+    Logger.debug "Reconfiguring mDNS IP: #{inspect ip}"
     # :timer.sleep(2000)
     ip =
       String.split(ip, ".")
