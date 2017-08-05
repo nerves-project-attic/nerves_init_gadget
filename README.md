@@ -26,7 +26,7 @@ This project works best with
 def deps do
   [
     {:bootloader, "~> 0.1"},
-    {:nerves_init_gadget, github: "fhunleth/nerves_init_gadget", branch: "master"}
+    {:nerves_init_gadget, "~> 0.1"}
   ]
 end
 ```
@@ -88,4 +88,9 @@ $ MIX_TARGET=rpi0 mix firmware.push nerves.local
 
 Change `MIX_TARGET` to whatever you're using to build the firmware.  Assuming
 everything completes successfully, the device will reboot with the new firmware.
+
+If you have a password-protected ssh private key, `mix firmware.push` currently
+isn't able to prompt for the password like commandline `ssh`. See
+[nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for the
+`upload.sh` script which uses commandline `ssh` and doesn't have this issue.
 

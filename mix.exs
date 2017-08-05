@@ -3,38 +3,37 @@ defmodule Nerves.InitGadget.Mixfile do
 
   def project do
     [app: :nerves_init_gadget,
-     name: "Nerves Init Gadget",
-     description: "Easy Nerves initialization for devices with USB gadget interfaces",
-     author: "Frank Hunleth",
      version: "0.1.0",
+     description: "Easy Nerves initialization for devices with USB gadget interfaces",
+     package: package(),
      elixir: "~> 1.4",
+     docs: docs(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps()]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
-    # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [:logger],
      mod: {Nerves.InitGadget.Application, []}]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
+  defp package do
+    %{maintainers: ["Frank Hunleth"],
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => "https://github.com/fhunleth/nerves_init_gadget"}}
+  end
+
+  defp docs do
+    [main: "readme",
+     extras: ["README.md"]]
+  end
+
   defp deps do
     [{:nerves_runtime, "~> 0.3"},
      {:nerves_network, "~> 0.3"},
      {:nerves_firmware_ssh, "~> 0.2"},
-     {:mdns, "~> 0.1"}]
+     {:mdns, "~> 0.1"},
+     {:ex_doc, "~> 0.11", only: :dev}]
   end
 end
