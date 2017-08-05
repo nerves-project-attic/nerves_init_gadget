@@ -91,7 +91,9 @@ Change `MIX_TARGET` to whatever you're using to build the firmware.  Assuming
 everything completes successfully, the device will reboot with the new firmware.
 
 If you have a password-protected ssh private key, `mix firmware.push` currently
-isn't able to prompt for the password like commandline `ssh`. See
-[nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for the
-`upload.sh` script which uses commandline `ssh` and doesn't have this issue.
-
+isn't able to prompt for the password or use the ssh-agent. This means that you
+either need to pass your password in cleartext on the commandline (ugh), create
+a new public/private key pair or use commandline `ssh`. For commandline `ssh`,
+take a look at the `upload.sh` script from
+[nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for an
+example.
