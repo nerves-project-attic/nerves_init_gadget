@@ -1,4 +1,5 @@
-# Nerves.InitGadget
+# nerves_init_gadget
+[![Hex version](https://img.shields.io/hexpm/v/nerves_init_gadget.svg "Hex version")](https://hex.pm/packages/nerves_init_gadget)
 
 This project adds a basic level of setup for Nerves devices with USB gadget mode
 interfaces like the Raspberry Pi Zero. Here are some features:
