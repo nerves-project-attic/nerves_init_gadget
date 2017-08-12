@@ -4,17 +4,17 @@
 This project adds a basic level of setup for Nerves devices with USB gadget mode
 interfaces like the Raspberry Pi Zero. Here are some features:
 
-* Automatically sets up link local networking on the USB interface. No DHCP or
-  static IP setup needed on the host laptop
+* Automatically sets up link-local networking on the USB interface. No DHCP or
+  static IP setup is needed on the host laptop
 * Sets up mDNS to respond to lookups for `nerves.local`
 * Pulls in the `nerves_runtime` initialization for things like mounting and
   fixing the application filesystem
-* Starts `nerves_firmware_ssh` so that push firmware updates work
+* Starts `nerves_firmware_ssh` so that firmware push updates work
 * If used with [bootloader](https://github.com/nerves-project/bootloader),
   crashes in your application's initialization won't break firmware updates
 
 While you'll probably want to create your own device initialization project at
-some point, this project serves as a great starting point especially if you're
+some point, this project serves as a great starting point, especially if you're
 new to Nerves.
 
 ## Installation
@@ -43,7 +43,7 @@ release :your_app do
 end
 ```
 
-Now add the following configuration to your `config/config.exs` (replace
+Now, add the following configuration to your `config/config.exs` (replace
 `:your_app)`:
 
 ```elixir
@@ -53,10 +53,10 @@ config :bootloader,
   app: :your_app
 ```
 
-The final configuration is item is to set up authorized keys for pushing
+The final configuration item is to set up authorized keys for pushing
 firmware updates to the device. This is documented in more detail at
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh).
-Basically the device will need to know the `ssh` public keys for all of the
+Basically, the device will need to know the `ssh` public keys for all of the
 users that are allowed to update the firmware. Copy the contents of the
 `id_rsa.pub`, etc.  files from your `~/.ssh` directory here like this:
 
@@ -90,10 +90,10 @@ $ MIX_TARGET=rpi0 mix firmware.push nerves.local
 Change `MIX_TARGET` to whatever you're using to build the firmware.  Assuming
 everything completes successfully, the device will reboot with the new firmware.
 
-If you have a password-protected ssh private key, `mix firmware.push` currently
-isn't able to prompt for the password or use the ssh-agent. This means that you
+If you have a password-protected `ssh` private key, `mix firmware.push` currently
+isn't able to prompt for the password or use the `ssh-agent`. This means that you
 either need to pass your password in cleartext on the commandline (ugh), create
-a new public/private key pair or use commandline `ssh`. For commandline `ssh`,
+a new public/private key pair, or use commandline `ssh`. For commandline `ssh`,
 take a look at the `upload.sh` script from
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for an
 example.
