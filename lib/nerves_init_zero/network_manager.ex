@@ -11,9 +11,8 @@ defmodule Nerves.InitGadget.NetworkManager do
   end
 
   def init(iface) do
-    Logger.debug "Start Network Manager"
-    :os.cmd 'epmd -daemon'
-    SystemRegistry.register
+    Logger.debug("Start Network Manager")
+    SystemRegistry.register()
     {:ok, {iface, nil}}
   end
 
@@ -21,22 +20,14 @@ defmodule Nerves.InitGadget.NetworkManager do
     scope = scope(iface, [:ipv4_address])
     ip = get_in(registry, scope)
     if ip != current do
-      Logger.debug "IP Address Changed"
-      #restart_net_kernel(ip)
+      Logger.debug("IP Address Changed")
       configure_mdns(ip)
     end
     {:noreply, {iface, ip}}
   end
 
-  # defp restart_net_kernel(ip) do
-  #   Logger.debug "Restarting Net Kernel"
-  #   :net_kernel.stop()
-  #   :net_kernel.start([:"#{@app}@#{ip}"])
-  # end
-
   defp configure_mdns(ip) do
-    Logger.debug "Reconfiguring mDNS IP: #{inspect ip}"
-    # :timer.sleep(2000)
+    Logger.debug("Reconfiguring mDNS IP: #{inspect ip}")
     ip =
       String.split(ip, ".")
       |> Enum.map(&parse_int/1)
