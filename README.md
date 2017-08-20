@@ -81,6 +81,9 @@ it's working:
 $ ping nerves.local
 ```
 
+If you're using Ubuntu and `ping` doesn't work, check the Network Settings for
+the `usb0` interface and set the IPv4 Method to "Link-Local Only".
+
 To update firmware from now on, just run the following:
 
 ```
