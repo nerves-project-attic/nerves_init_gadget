@@ -100,3 +100,31 @@ a new public/private key pair, or use commandline `ssh`. For commandline `ssh`,
 take a look at the `upload.sh` script from
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for an
 example.
+
+## Troubleshooting
+
+If things aren't working, try the following to figure out what's wrong:
+
+1. Check that you're plugged into the right USB port on the target. The
+   Raspberry Pi Zero, for example, has two USB ports but one of them is only for
+   power.
+2. Check that the USB cable works (some cables are power-only and don't have the
+   data lines hooked up). Try connecting to the virtual serial port using
+   `picocom` or `screen` to get to the IEx prompt.
+3. Check your host machine's Ethernet settings. You'll want to make sure that
+   link-local addressing is enabled on the virtual Ethernet interface. Static
+   addresses won't work. DHCP addressing should eventually work since link-local
+   addressing is what happens when DHCP fails. The IP address that's assigned to
+   the virtual Ethernet interface should be in the 169.254.0.0/16 subnet.
+4. Reboot the target and connect over the virtual serial port as soon as it
+   allows. Watch the log messages to see that an IP address is assigned to the
+   virtual Ethernet port. Try pinging that directly. If nothing is assigned,
+   it's possible that something is wrong with the Ethernet gadget device drivers
+   but that's more advanced to debug and shouldn't be an issue if you haven't
+   modified the official Nerves systems.
+5. If you're having trouble with firmware updates, check out the
+   [`nerves_firmware_ssh` troubleshooting steps](https://github.com/fhunleth/nerves_firmware_ssh#troubleshooting).
+6. If all else fails, please file an [issue](https://github.com/fhunleth/nerves_init_gadget/issues/new)
+   or try the `#nerves` channel on the [Elixir Slack](https://elixir-slackin.herokuapp.com/).
+   Inevitably someone else will hit your problem too and we'd like to improve
+   the experience for future users.
