@@ -68,7 +68,7 @@ config :nerves_firmware_ssh,
   ]
 ```
 
-That's it! Run `mix deps.get` and `mix firmware` like usual and copy the new
+That's it! Run `mix deps.get`, `mix nerves.release.init` and `mix firmware` like usual and copy the new
 image to your device.
 
 ## Using
