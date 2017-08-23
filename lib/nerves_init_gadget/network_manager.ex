@@ -3,47 +3,49 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   require Logger
 
-  # @app Mix.Project.config[:app]
+  @moduledoc false
+
   @scope [:state, :network_interface]
 
-  def start_link(iface) do
-    GenServer.start_link(__MODULE__, iface)
+  defmodule State do
+    @moduledoc false
+    defstruct ifname: nil, ip: nil
   end
 
-  def init(iface) do
-    Logger.debug("Start Network Manager")
+  def start_link(ifname) do
+    GenServer.start_link(__MODULE__, ifname)
+  end
+
+  def init(ifname) do
     SystemRegistry.register()
-    {:ok, {iface, nil}}
+    {:ok, %State{ifname: ifname}}
   end
 
-  def handle_info({:system_registry, :global, registry}, {iface, current}) do
-    scope = scope(iface, [:ipv4_address])
+  def handle_info({:system_registry, :global, registry}, state) do
+    scope = scope(state.ifname, [:ipv4_address])
     ip = get_in(registry, scope)
-    if ip != current do
-      Logger.debug("IP Address Changed")
-      configure_mdns(ip)
+    if ip != state.ip do
+      Logger.debug("IP address for #{state.ifname} changed to #{inspect ip}")
+      update_mdns(ip)
     end
-    {:noreply, {iface, ip}}
+    {:noreply, %{state | ip: ip}}
   end
 
-  defp configure_mdns(ip) do
-    Logger.debug("Reconfiguring mDNS IP: #{inspect ip}")
-    ip =
-      String.split(ip, ".")
-      |> Enum.map(&parse_int/1)
-      |> List.to_tuple
-
+  defp update_mdns(ip_str) do
+    ip = to_ip_tuple(ip_str)
     Mdns.Server.stop()
     Mdns.Server.start(interface: ip)
     Mdns.Server.set_ip(ip)
   end
 
-  defp scope(iface, append) do
-    @scope ++ [iface] ++ append
+  defp scope(ifname, append) do
+    @scope ++ [ifname] ++ append
   end
 
-  defp parse_int(str) do
-    {int, _} = Integer.parse(str)
-    int
+  defp to_ip_tuple(str) do
+    str
+    |> String.split(".")
+    |> Enum.map(&String.to_integer/1)
+    |> List.to_tuple
   end
 end
