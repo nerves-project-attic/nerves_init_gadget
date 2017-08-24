@@ -287,3 +287,7 @@ If things aren't working, try the following to figure out what's wrong:
    or try the `#nerves` channel on the [Elixir Slack](https://elixir-slackin.herokuapp.com/).
    Inevitably someone else will hit your problem too and we'd like to improve
    the experience for future users.
+
+## License
+
+This code is licensed under the Apache License 2.0.
