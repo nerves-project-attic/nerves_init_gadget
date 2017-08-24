@@ -253,10 +253,16 @@ disabled.
 #### `:node_name`
 
 This is the node name for Erlang distribution. If specified, `epmd` will be
-started and the node will be configured as `:name@ip_address`. You'll be able to
+started and the node will be configured as `:name@host`. You'll be able to
 see the node's name at the IEx prompt and it's possible to determine
 programmatically by resolving `nerves.local` on a host if you need to write
 something that automatically connects.
+
+#### `:node_host`
+
+Defaults to `:ip` which means that it will use the ip of the interface specified
+in `:ifname`. You can also set this to a hostname such as the one configured in
+`:mdns_domain`.
 
 Currently only long names are supported (i.e., no snames).
 

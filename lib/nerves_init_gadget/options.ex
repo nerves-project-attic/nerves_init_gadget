@@ -4,6 +4,7 @@ defmodule Nerves.InitGadget.Options do
   defstruct ifname: "usb0",
             address_method: :linklocal,
             mdns_domain: "nerves.local",
-            node_name: nil
+            node_name: nil,
+            node_host: :ip
 
 end

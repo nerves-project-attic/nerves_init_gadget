@@ -40,7 +40,8 @@ defmodule Nerves.InitGadget.NetworkManager do
   defp handle_ip_update(state, new_ip) do
     Logger.debug("IP address for #{state.ifname} changed to #{new_ip}")
     update_mdns(new_ip, state.opts.mdns_domain)
-    update_net_kernel(new_ip, state.opts.node_name)
+    host = if state.opts.node_host == :ip, do: new_ip, else: state.opts.node_host
+    update_net_kernel(host, state.opts.node_name)
     {:noreply, %{state | ip: new_ip}}
   end
 
