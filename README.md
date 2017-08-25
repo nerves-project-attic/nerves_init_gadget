@@ -221,7 +221,8 @@ config :nerves_init_gadget,
   ifname: "usb0",
   address_method: :linklocal,
   mdns_domain: "nerves.local",
-  node_name: nil
+  node_name: nil,
+  node_host: :mdns_domain
 ```
 
 The above are the defaults and should work for most users. The following
@@ -252,19 +253,24 @@ disabled.
 
 #### `:node_name`
 
-This is the node name for Erlang distribution. If specified, `epmd` will be
-started and the node will be configured as `:name@host`. You'll be able to
-see the node's name at the IEx prompt and it's possible to determine
-programmatically by resolving `nerves.local` on a host if you need to write
-something that automatically connects.
+This is the node name for Erlang distribution. If specified (non-nil),
+`nerves_init_gadget` will start `epmd` and configure the node as
+`:<name>@<host>`. See the next option for the `host` part.
+
+Currently only long names are supported (i.e., no snames).
 
 #### `:node_host`
 
-Defaults to `:ip` which means that it will use the ip of the interface specified
-in `:ifname`. You can also set this to a hostname such as the one configured in
-`:mdns_domain`.
+This is the host part of the node name when using Erlang distribution. You may
+specify a string to use as a host name or one of the following atoms:
 
-Currently only long names are supported (i.e., no snames).
+* `:ip` - Set the host part to `:ifname`'s assigned IP address.
+* `:mdns_domain` Set the host part to the value advertised by mDNS
+
+The default is `:mdns_domain` so that the following remsh invocation works:
+```
+iex --name me@mylaptop --cookie acookie --remsh node_name@nerves.local
+```
 
 ## Troubleshooting
 
