@@ -58,6 +58,12 @@ defmodule Nerves.InitGadget.NetworkManager do
   defp update_mdns(ip, _mdns_domain) do
     ip_tuple = to_ip_tuple(ip)
     Mdns.Server.stop()
+
+    # Give the interface time to settle to fix an issue where mDNS's multicast
+    # membership is not registered. This occurs on wireless interfaces and
+    # needs to be revisited.
+    :timer.sleep(100)
+
     Mdns.Server.start(interface: ip_tuple)
     Mdns.Server.set_ip(ip_tuple)
   end
