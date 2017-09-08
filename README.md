@@ -269,7 +269,7 @@ specify a string to use as a host name or one of the following atoms:
 
 The default is `:mdns_domain` so that the following remsh invocation works:
 ```
-iex --name me@mylaptop --cookie acookie --remsh node_name@nerves.local
+iex --name me@0.0.0.0 --cookie acookie --remsh node_name@nerves.local
 ```
 
 ## Troubleshooting
