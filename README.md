@@ -49,7 +49,7 @@ def deps(target) do
   [ system(target),
     {:bootloader, "~> 0.1"},
     {:nerves_runtime, "~> 0.4"},
-    {:nerves_init_gadget, "~> 0.1"}
+    {:nerves_init_gadget, "~> 0.2"}
   ]
 end
 ```
@@ -63,7 +63,7 @@ development so that you can still send firmware updates to a device.
 ```elixir
 # Boot the bootloader first and have it start our app.
 config :bootloader,
-  init: [:nerves_init_gadget],
+  init: [:nerves_runtime, :nerves_init_gadget],
   app: :mygadget
 ```
 
@@ -124,7 +124,7 @@ assume that it's around, update your `mix.exs` deps with it too:
 def deps do
   [
     {:bootloader, "~> 0.1"},
-    {:nerves_init_gadget, "~> 0.1"}
+    {:nerves_init_gadget, "~> 0.2"}
   ]
 end
 ```
@@ -146,7 +146,7 @@ Now, add the following configuration to your `config/config.exs` (replace
 ```elixir
 # Boot the bootloader first and have it start our app.
 config :bootloader,
-  init: [:nerves_init_gadget],
+  init: [:nerves_runtime, :nerves_init_gadget],
   app: :your_app
 ```
 
