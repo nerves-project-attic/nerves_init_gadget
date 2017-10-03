@@ -181,10 +181,10 @@ mix firmware.burn
 
 ## Using
 
-Connect your RPi0 over the USB port with your computer (use the port labeled
-"USB", not the one labeled "PWR").  Give your device a few seconds to boot and
-initialize the virtual Ethernet interface going through the USB cable. On your
-computer, run `ping` to see that
+Connect your device over the USB port with your computer (if using a RPi0, it
+is very important to use the port labeled "USB" and not the one labeled "PWR").
+Give your device a few seconds to boot and initialize the virtual Ethernet
+interface going through the USB cable. On your computer, run `ping` to see that
 it's working:
 
 ```sh
