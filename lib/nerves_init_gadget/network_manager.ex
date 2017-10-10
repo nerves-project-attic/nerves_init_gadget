@@ -7,9 +7,7 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   defmodule State do
     @moduledoc false
-    defstruct ifname: nil,
-              ip: nil,
-              opts: nil
+    defstruct ifname: nil, ip: nil, opts: nil
   end
 
   def start_link(opts) do
@@ -37,6 +35,7 @@ defmodule Nerves.InitGadget.NetworkManager do
     # No change
     {:noreply, state}
   end
+
   defp handle_ip_update(state, new_ip) do
     Logger.debug("IP address for #{state.ifname} changed to #{new_ip}")
     update_mdns(new_ip, state.opts.mdns_domain)
@@ -45,6 +44,7 @@ defmodule Nerves.InitGadget.NetworkManager do
   end
 
   defp init_mdns(nil), do: :ok
+
   defp init_mdns(mdns_domain) do
     Mdns.Server.add_service(%Mdns.Server.Service{
       domain: mdns_domain,
@@ -55,6 +55,7 @@ defmodule Nerves.InitGadget.NetworkManager do
   end
 
   defp update_mdns(_ip, nil), do: :ok
+
   defp update_mdns(ip, _mdns_domain) do
     ip_tuple = to_ip_tuple(ip)
     Mdns.Server.stop()
@@ -76,12 +77,16 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   defp update_net_kernel(ip, opts) do
     new_name = make_node_name(opts, ip)
+
     if new_name do
       :net_kernel.stop()
 
       case :net_kernel.start([new_name]) do
-        {:ok, _} -> Logger.debug("Restarted Erlang distribution as node #{inspect new_name}")
-        {:error, reason} -> Logger.error("Erlang distribution failed to start: #{inspect reason}")
+        {:ok, _} ->
+          Logger.debug("Restarted Erlang distribution as node #{inspect(new_name)}")
+
+        {:error, reason} ->
+          Logger.error("Erlang distribution failed to start: #{inspect(reason)}")
       end
     end
   end
@@ -90,7 +95,7 @@ defmodule Nerves.InitGadget.NetworkManager do
     str
     |> String.split(".")
     |> Enum.map(&String.to_integer/1)
-    |> List.to_tuple
+    |> List.to_tuple()
   end
 
   defp erlang_distribution_enabled?(opts) do
@@ -100,13 +105,18 @@ defmodule Nerves.InitGadget.NetworkManager do
   defp make_node_name(%{node_name: name, node_host: :ip}, ip) do
     to_node_name(name, ip)
   end
-  defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, _ip) when host != nil do
+
+  defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, _ip)
+       when host != nil do
     to_node_name(name, host)
   end
-  defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, ip) when host == nil do
+
+  defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, ip)
+       when host == nil do
     # revert to IP address if no mdns domain
     to_node_name(name, ip)
   end
+
   defp make_node_name(%{node_name: name, node_host: host}, _ip) do
     to_node_name(name, host)
   end

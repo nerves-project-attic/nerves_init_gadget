@@ -6,5 +6,4 @@ defmodule Nerves.InitGadget.Options do
             mdns_domain: "nerves.local",
             node_name: nil,
             node_host: :mdns_domain
-
 end
