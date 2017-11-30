@@ -35,7 +35,7 @@ the new project generator:
 mix local.nerves
 
 # or if you don't have it yet
-mix archive.install https://github.com/nerves-project/archives/raw/master/nerves_bootstrap.ex
+mix archive.install hex nerves_bootstrap
 ```
 
 Create a new project using the generator:
