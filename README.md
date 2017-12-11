@@ -192,7 +192,11 @@ ping nerves.local
 ```
 
 If you're using Ubuntu and `ping` doesn't work, check the Network Settings for
-the `usb0` interface and set the IPv4 Method to "Link-Local Only".
+the `usb0` interface and set the IPv4 Method to "Link-Local Only". Depending on
+your kernel settings for "Predictable Network Interface Naming", the interface 
+might be called `enp0s26u1u2` or some variation thereof. Be aware that the 
+`NetworkManager` tool may have trouble holding on to configured settings for
+this network interface between unplugging and replugging. 
 
 If the network still doesn't work, check that the virtual serial port to the
 device works and see the troubleshooting section.
@@ -213,6 +217,10 @@ a new public/private key pair, or use commandline `ssh`. For commandline `ssh`,
 take a look at the `upload.sh` script from
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for an
 example.
+
+If you have your private key stored in a file with a different name than `id_dsa`, 
+`id_rsa`, or `identity`, chances are that `mix firmware push` will not find them. 
+Use `upload.sh` in this case as well.
 
 ## Configuration
 
@@ -283,7 +291,9 @@ If things aren't working, try the following to figure out what's wrong:
    power.
 2. Check that the USB cable works (some cables are power-only and don't have the
    data lines hooked up). Try connecting to the virtual serial port using
-   `picocom` or `screen` to get to the IEx prompt.
+   `picocom` or `screen` to get to the IEx prompt. Depending on your host system
+   the virtual serial port may be named `/dev/ttyUSB0`, `/dev/ttyACM0`, or some
+   variation of that.
 3. Check your host machine's Ethernet settings. You'll want to make sure that
    link-local addressing is enabled on the virtual Ethernet interface. Static
    addresses won't work. DHCP addressing should eventually work since link-local
