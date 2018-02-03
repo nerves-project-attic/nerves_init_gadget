@@ -10,7 +10,7 @@ interfaces like the Raspberry Pi Zero. Here are some features:
 * Pulls in the `nerves_runtime` initialization for things like mounting and
   fixing the application filesystem
 * Starts `nerves_firmware_ssh` so that firmware push updates work
-* If used with [bootloader](https://github.com/nerves-project/bootloader),
+* If used with [shoehorn](https://github.com/nerves-project/shoehorn),
   crashes in your application's initialization won't break firmware updates
 * Configure Erlang Distribution so that you can remsh into a device, use
   Observer or other debug and tracing tools
@@ -47,7 +47,7 @@ Add `nerves_init_gadget` to the deps in the `mix.exs`:
 ```elixir
 def deps(target) do
   [ system(target),
-    {:bootloader, "~> 0.1"},
+    {:shoehorn, "~> 0.2"},
     {:nerves_runtime, "~> 0.4"},
     {:nerves_init_gadget, "~> 0.2"}
   ]
@@ -55,14 +55,14 @@ end
 ```
 
 Now add `nerves_init_gadget` to the list of applications to always start. If you
-haven't used `bootloader` before, it separates the application initialization
+haven't used `shoehorn` before, it separates the application initialization
 into phases to isolate failures. This lets us ensure that `nerves_init_gadget`
 runs even if we messed up something in our application code. It's useful during
 development so that you can still send firmware updates to a device.
 
 ```elixir
-# Boot the bootloader first and have it start our app.
-config :bootloader,
+# Boot Shoehorn first and have it start our app.
+config :shoehorn,
   init: [:nerves_runtime, :nerves_init_gadget],
   app: :mygadget
 ```
@@ -115,7 +115,7 @@ virtual Ethernet adapter and virtual serial port on the target. The official
 `nerves_system_rpi0` does this.
 
 This project works well with
-[bootloader](https://github.com/nerves-project/bootloader). It's not mandatory,
+[shoehorn](https://github.com/nerves-project/shoehorn). It's not mandatory,
 but it's pretty convenient since it can handle your application crashing during
 development without forcing you to re-burn an SDCard. Since other instructions
 assume that it's around, update your `mix.exs` deps with it too:
@@ -123,19 +123,19 @@ assume that it's around, update your `mix.exs` deps with it too:
 ```elixir
 def deps do
   [
-    {:bootloader, "~> 0.1"},
+    {:shoehorn, "~> 0.2"},
     {:nerves_init_gadget, "~> 0.2"}
   ]
 end
 ```
 
-Bootloader requires a plugin to the
+Shoehorn requires a plugin to the
 [distillery](https://github.com/bitwalker/distillery) configuration, so add it
 to your `rel/config.exs` (replace `:your_app`):
 
 ```elixir
 release :your_app do
-  plugin Bootloader.Plugin
+  plugin Shoehorn
   ...
 end
 ```
@@ -144,8 +144,8 @@ Now, add the following configuration to your `config/config.exs` (replace
 `:your_app)`:
 
 ```elixir
-# Boot the bootloader first and have it start our app.
-config :bootloader,
+# Boot Shoehorn first and have it start our app.
+config :shoehorn,
   init: [:nerves_runtime, :nerves_init_gadget],
   app: :your_app
 ```
