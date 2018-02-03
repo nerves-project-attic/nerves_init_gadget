@@ -9,7 +9,7 @@ defmodule Nerves.InitGadget do
   * Pulls in the `nerves_runtime` initialization for things like mounting and
     fixing the application filesystem
   * Starts `nerves_firmware_ssh` so that firmware push updates work
-  * If used with [bootloader](https://github.com/nerves-project/bootloader),
+  * If used with [shoehorn](https://github.com/nerves-project/shoehorn),
     crashes in your application's initialization won't break firmware updates
 
   While you'll probably want to create your own device initialization project at
