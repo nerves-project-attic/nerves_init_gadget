@@ -1,4 +1,5 @@
 # nerves_init_gadget
+
 [![Hex version](https://img.shields.io/hexpm/v/nerves_init_gadget.svg "Hex version")](https://hex.pm/packages/nerves_init_gadget)
 
 This project adds a basic level of setup for Nerves devices with USB gadget mode
@@ -39,11 +40,13 @@ mix archive.install hex nerves_bootstrap
 ```
 
 Create a new project using the generator:
+
 ```sh
 mix nerves.new mygadget
 ```
 
 Add `nerves_init_gadget` to the deps in the `mix.exs`:
+
 ```elixir
 def deps(target) do
   [ system(target),
@@ -193,10 +196,10 @@ ping nerves.local
 
 If you're using Ubuntu and `ping` doesn't work, check the Network Settings for
 the `usb0` interface and set the IPv4 Method to "Link-Local Only". Depending on
-your kernel settings for "Predictable Network Interface Naming", the interface 
-might be called `enp0s26u1u2` or some variation thereof. Be aware that the 
+your kernel settings for "Predictable Network Interface Naming", the interface
+might be called `enp0s26u1u2` or some variation thereof. Be aware that the
 `NetworkManager` tool may have trouble holding on to configured settings for
-this network interface between unplugging and replugging. 
+this network interface between unplugging and replugging.
 
 If the network still doesn't work, check that the virtual serial port to the
 device works and see the troubleshooting section.
@@ -218,8 +221,8 @@ take a look at the `upload.sh` script from
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for an
 example.
 
-If you have your private key stored in a file with a different name than `id_dsa`, 
-`id_rsa`, or `identity`, chances are that `mix firmware push` will not find them. 
+If you have your private key stored in a file with a different name than `id_dsa`,
+`id_rsa`, or `identity`, chances are that `mix firmware push` will not find them.
 Use `upload.sh` in this case as well.
 
 ## Configuration
@@ -238,7 +241,7 @@ config :nerves_init_gadget,
 The above are the defaults and should work for most users. The following
 sections go into more detail on the individual options.
 
-#### `:ifname`
+### `:ifname`
 
 This sets the network interface to configure and monitor on the device. For
 gadget use, this is almost aways `usb0`. If you'd like to use
@@ -249,19 +252,19 @@ to associate with. See the [`nerves_network`
 docs](https://github.com/nerves-project/nerves_network#configuring-defaults) for
 details.
 
-#### `:address_method`
+### `:address_method`
 
 This sets how an IP address should be assigned to the network interface. If
 using anything but `:linklocal` and `:dhcp`, you'll need to configure defaults
 on `nerves_network` to set other parameters.
 
-#### `:mdns_domain`
+### `:mdns_domain`
 
 This is the mDNS name for finding the device. If you don't like `nerves.local`,
 feel free to specify something else. If you set this to `nil`, mDNS will be
 disabled.
 
-#### `:node_name`
+### `:node_name`
 
 This is the node name for Erlang distribution. If specified (non-nil),
 `nerves_init_gadget` will start `epmd` and configure the node as
@@ -269,7 +272,7 @@ This is the node name for Erlang distribution. If specified (non-nil),
 
 Currently only long names are supported (i.e., no snames).
 
-#### `:node_host`
+### `:node_host`
 
 This is the host part of the node name when using Erlang distribution. You may
 specify a string to use as a host name or one of the following atoms:
@@ -278,7 +281,8 @@ specify a string to use as a host name or one of the following atoms:
 * `:mdns_domain` Set the host part to the value advertised by mDNS
 
 The default is `:mdns_domain` so that the following remsh invocation works:
-```
+
+```bash
 iex --name me@0.0.0.0 --cookie acookie --remsh node_name@nerves.local
 ```
 
@@ -311,6 +315,49 @@ If things aren't working, try the following to figure out what's wrong:
    or try the `#nerves` channel on the [Elixir Slack](https://elixir-slackin.herokuapp.com/).
    Inevitably someone else will hit your problem too and we'd like to improve
    the experience for future users.
+
+## FAQ
+
+### What should I put in my config for Raspberry Pi 3 w/ wired Ethernet
+
+Try this if you're on a DHCP-enabled network:
+
+```elixir
+config :nerves_init_gadget,
+  ifname: "eth0",
+  address_method: :dhcp,
+  node_name: "murphy"
+```
+
+This also starts up Erlang distribution with a node name of "murphy". Get your
+cookie from `rel/vm.args` (look for the `-setcookie` line) and run the following
+to connect to your device:
+
+```bash
+iex --name me@0.0.0.0 --cookie acookie --remsh murphy@nerves.local
+```
+
+### Why do I see `x\360~` when I reboot
+
+You may also see things like this:
+
+```elixir
+x\360~
+** (SyntaxError) iex:4: invalid sigil delimiter: "\360" (column 3, codepoint U+00F0). The available delimiters are: //, ||, "", '', (), [], {}, <>
+```
+
+You're probably also using Linux. This is
+[ModemManager](https://www.freedesktop.org/wiki/Software/ModemManager/) probing
+the serial port to see if there's a modem. ModemManager prevents anything from
+using the serial port until it gives up on finding a modem at the other end.
+This takes a second or two and leaves junk behind at the IEx prompt.
+
+Check out the ModemManager description to see whether this software is even
+something that you want. Here's a popular solution:
+
+```bash
+sudo apt remove modemmanager
+```
 
 ## License
 
