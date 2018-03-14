@@ -2,23 +2,26 @@
 
 [![Hex version](https://img.shields.io/hexpm/v/nerves_init_gadget.svg "Hex version")](https://hex.pm/packages/nerves_init_gadget)
 
-This project adds a basic level of setup for Nerves devices with USB gadget mode
-interfaces like the Raspberry Pi Zero. Here are some features:
+This project provides the basics for getting started with Nerves. This includes
+bringing up networking, over-the-air firmware updates and many other little
+things that make using Nerves a little better. At some point your project may
+outgrow `nerves_init_gadget` and when that happens, you can use it as an
+example.
 
-* Automatically sets up link-local networking on the USB interface. No DHCP or
-  static IP setup is needed on the host laptop
-* Sets up mDNS to respond to lookups for `nerves.local`
-* Pulls in the `nerves_runtime` initialization for things like mounting and
-  fixing the application filesystem
-* Starts `nerves_firmware_ssh` so that firmware push updates work
-* If used with [shoehorn](https://github.com/nerves-project/shoehorn),
-  crashes in your application's initialization won't break firmware updates
-* Configure Erlang Distribution so that you can remsh into a device, use
-  Observer or other debug and tracing tools
+By design, this project is mostly dependences and only a little bit of "glue"
+code. Here's a summary of what you get:
 
-While you'll probably want to create your own device initialization project at
-some point, this project serves as a great starting point, especially if you're
-new to Nerves.
+* Link-local networking for devices that can connect via a USB gadget interface
+  like the Raspberry Pi Zero and Beaglebone boards.
+* mDNS support to advertise a name like `nerves.local`
+* Device detection, filesystem mounting, and basic device control from `nerves_runtime`
+* Over-the-air firmware updates using `nerves_firmware_ssh`
+* Easy setup of Erlang distribution to support remsh, Observer and other debug
+  and tracing tools
+* IEx helpers for a happier commandline experience
+* [shoehorn](https://github.com/nerves-project/shoehorn)-aware instructions to
+  reduce the number of SDCard reprogrammings that you need to do in regular
+  development.
 
 ## Installation for a new project
 
