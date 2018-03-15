@@ -19,6 +19,7 @@ code. Here's a summary of what you get:
 * Easy setup of Erlang distribution to support remsh, Observer and other debug
   and tracing tools
 * IEx helpers for a happier commandline experience
+* Logging via [ring_logger](https://github.com/nerves-project/ring_logger)
 * [shoehorn](https://github.com/nerves-project/shoehorn)-aware instructions to
   reduce the number of SDCard reprogrammings that you need to do in regular
   development.
@@ -64,7 +65,8 @@ Now add `nerves_init_gadget` to the list of applications to always start. If you
 haven't used `shoehorn` before, it separates the application initialization
 into phases to isolate failures. This lets us ensure that `nerves_init_gadget`
 runs even if we messed up something in our application code. It's useful during
-development so that you can still send firmware updates to a device.
+development so that you can send firmware updates to devices with broken
+software.
 
 ```elixir
 # Boot Shoehorn first and have it start our app.
@@ -84,6 +86,16 @@ config :nerves_firmware_ssh,
   authorized_keys: [
     File.read!(Path.join(System.user_home!, ".ssh/id_rsa.pub"))
   ]
+```
+
+The last change to the `config.exs` is to replace the default Elixir logger with
+[ring_logger](https://github.com/nerves-project/ring_logger). Eventually you may
+want to persist logs or send them to a server, but for now this keeps them
+around in memory so that you can review them even if you're not connected when
+the messages are sent.
+
+```elixir
+config :logger, backends: [RingLogger]
 ```
 
 Finally, run the usual Elixir and Nerves build steps:
@@ -168,6 +180,15 @@ config :nerves_firmware_ssh,
   authorized_keys: [
     File.read!(Path.join(System.user_home!, ".ssh/id_rsa.pub"))
   ]
+```
+
+The last change to the `config.exs` is to enable
+[ring_logger](https://github.com/nerves-project/ring_logger). Like many aspects
+of `nerves_init_gadget`, this is optional and you can use the default Elixir
+logger or a logger of your choosing if you'd like.
+
+```elixir
+config :logger, backends: [RingLogger]
 ```
 
 That's it! Now you can do the normal Nerves development procedure for building and
