@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.0
+
+* New features
+  * Pulled in project rename of bootloader to shoehorn. Be sure to update your
+    `config/config.exs` and `rel/config.exs` references to bootloader.
+  * Add dependency on `ring_logger` and instructions for setting it up since it
+    fixes many of the reported issues when getting started with the console
+    logger.
+
+* Bug fixes
+  * Removed many Elixir 1.5/1.6 warnings by updating dependencies
+
 ## v0.2.1
 
 * Bug fixes
