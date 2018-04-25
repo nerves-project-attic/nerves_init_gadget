@@ -18,6 +18,7 @@ code. Here's a summary of what you get:
 * Over-the-air firmware updates using `nerves_firmware_ssh`
 * Easy setup of Erlang distribution to support remsh, Observer and other debug
   and tracing tools
+* Access to the IEx console via `ssh`
 * IEx helpers for a happier commandline experience
 * Logging via [ring_logger](https://github.com/nerves-project/ring_logger)
 * [shoehorn](https://github.com/nerves-project/shoehorn)-aware instructions to
@@ -65,7 +66,8 @@ haven't used `shoehorn` before, it separates the application initialization
 into phases to isolate failures. This lets us ensure that `nerves_init_gadget`
 runs even if we messed up something in our application code. It's useful during
 development so that you can send firmware updates to devices with broken
-software.
+software. Take a look at your `config/config.exs` and edit the `:shoehorn`
+config to look something like this:
 
 ```elixir
 config :shoehorn,
@@ -85,6 +87,12 @@ config :nerves_firmware_ssh,
     File.read!(Path.join(System.user_home!, ".ssh/id_rsa.pub"))
   ]
 ```
+
+By itself, this does not allow you to log into your device using `ssh`. This is
+only for sending firmware updates to the device. (The `ssh` protocol is really
+cool and lets you do more than just connect to shells.) If you'd like to connect
+to the IEx prompt, see the [:ssh_console_port](#ssh_console_port) configuration
+option.
 
 The last change to the `config.exs` is to replace the default Elixir logger with
 [ring_logger](https://github.com/nerves-project/ring_logger). Eventually you may
@@ -315,6 +323,23 @@ The default is `:mdns_domain` so that the following remsh invocation works:
 ```bash
 iex --name me@0.0.0.0 --cookie acookie --remsh node_name@nerves.local
 ```
+
+### `:ssh_console_port`
+
+If specified (non-nil), `nerves_init_gadget` will start an IEx console on the
+specified port. This console will use the same ssh public keys as those
+configured for `:nerves_firmware_ssh`. For example, if you set
+`ssh_console_port: 22`, rebuild and update the firmware. Usernames are ignored,
+so you can ssh to the device just by running:
+
+```bash
+ssh nerves.local
+```
+
+To exit the SSH session, type `~.`. This is an `ssh` escape sequence (See the
+[ssh man page](https://linux.die.net/man/1/ssh) for other escape sequences).
+Typing `Ctrl+D` or `logoff` at the IEx prompt to exit the session aren't
+implemented.
 
 ## Troubleshooting
 

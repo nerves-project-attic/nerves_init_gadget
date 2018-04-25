@@ -11,7 +11,8 @@ defmodule Nerves.InitGadget.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
-      worker(Nerves.InitGadget.NetworkManager, [merged_opts])
+      worker(Nerves.InitGadget.NetworkManager, [merged_opts]),
+      worker(Nerves.InitGadget.SSHConsole, [merged_opts])
     ]
 
     opts = [strategy: :one_for_one, name: Nerves.InitGadget.Supervisor]
