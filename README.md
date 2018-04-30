@@ -361,6 +361,20 @@ to connect to your device:
 iex --name me@0.0.0.0 --cookie acookie --remsh murphy@nerves.local
 ```
 
+### How do I register a callback before the system reboots
+
+If you need to save data or notify the user of an impending reboot or power off,
+take a look at OTP's
+[`Application.stop/1`](https://hexdocs.pm/elixir/Application.html#c:stop/1) and
+[`Application.prep_stop/1`](https://hexdocs.pm/elixir/Application.html#c:prep_stop/1)
+callbacks. Reboots and shutdowns initiated through
+[`Nerves.Runtime.reboot/0`](https://hexdocs.pm/nerves_runtime/Nerves.Runtime.html#reboot/0)
+or
+[`Nerves.Runtime.poweroff/0`](https://hexdocs.pm/nerves_runtime/Nerves.Runtime.html#poweroff/0)
+have a timer that restricts how long the OTP shut down process can take. This
+prevents shutdown hangs. The timer duration is specified in
+[`erlinit.config`](https://hexdocs.pm/nerves/advanced-configuration.html#overwriting-files-in-the-root-filesystem).
+
 ### Why do I see `x\360~` when I reboot
 
 You may also see things like this:
