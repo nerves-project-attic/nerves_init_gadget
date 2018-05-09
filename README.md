@@ -52,13 +52,12 @@ mix nerves.new mygadget
 Add `nerves_init_gadget` to the deps in the `mix.exs`:
 
 ```elixir
-def deps(target) do
-  [ system(target),
-    {:shoehorn, "~> 0.2"},
-    {:nerves_runtime, "~> 0.4"},
-    {:nerves_init_gadget, "~> 0.2"}
-  ]
-end
+  defp deps(target) do
+    [
+      {:nerves_runtime, "~> 0.4"},
+      {:nerves_init_gadget, "~> 0.3"}
+    ] ++ system(target)
+  end
 ```
 
 Now add `nerves_init_gadget` to the list of applications to always start. If you
@@ -69,10 +68,9 @@ development so that you can send firmware updates to devices with broken
 software.
 
 ```elixir
-# Boot Shoehorn first and have it start our app.
 config :shoehorn,
   init: [:nerves_runtime, :nerves_init_gadget],
-  app: :mygadget
+  app: Mix.Project.config()[:app]
 ```
 
 Next, set up the ssh authorized keys for pushing firmware updates to the device.
@@ -105,9 +103,11 @@ Finally, run the usual Elixir and Nerves build steps:
 export MIX_TARGET=rpi0
 
 mix deps.get
-mix firmware` like usual and copy the new
-image to your device in the normal way. For devices that use MicroSD cards, run
-`mix firmware.burn`.
+mix firmware
+
+# Copy the firmware to a MicroSD card (or change this to how you do the
+# first-time load of software onto your device.)
+mix firmware.burn
 ```
 
 Since debugging ssh is particularly painful, take this opportunity to double
@@ -142,7 +142,7 @@ assume that it's around, update your `mix.exs` deps with it too:
 def deps do
   [
     {:shoehorn, "~> 0.2"},
-    {:nerves_init_gadget, "~> 0.2"}
+    {:nerves_init_gadget, "~> 0.3"}
   ]
 end
 ```
@@ -158,14 +158,12 @@ release :your_app do
 end
 ```
 
-Now, add the following configuration to your `config/config.exs` (replace
-`:your_app)`:
+Now, add the following configuration to your `config/config.exs`:
 
 ```elixir
-# Boot Shoehorn first and have it start our app.
 config :shoehorn,
   init: [:nerves_runtime, :nerves_init_gadget],
-  app: :your_app
+  app: Mix.Project.config()[:app]
 ```
 
 The final configuration item is to set up authorized keys for pushing
