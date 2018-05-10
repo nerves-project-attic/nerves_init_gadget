@@ -282,9 +282,17 @@ on `nerves_network` to set other parameters.
 
 ### `:mdns_domain`
 
-This is the mDNS name for finding the device. If you don't like `nerves.local`,
-feel free to specify something else. If you set this to `nil`, mDNS will be
-disabled.
+This is the mDNS name for finding the device. It defaults to `nerves.local`.
+This is very convenient when there's only one device on the network.
+
+If you don't want mDNS, set this to `nil`.
+
+You can set this to `:hostname` and the mDNS name will be set to the
+`hostname.local`. The official Nerves systems all generate semi-unique hostnames
+for devices. This makes it possible to discover devices via mDNS and also to
+connect to them. Note that if your network uses DHCP, Nerves lists its hostname
+in the DHCP request so if your router supports it, you may be able to connect to
+the device via the hostname as well.
 
 ### `:node_name`
 
@@ -300,7 +308,7 @@ This is the host part of the node name when using Erlang distribution. You may
 specify a string to use as a host name or one of the following atoms:
 
 * `:ip` - Set the host part to `:ifname`'s assigned IP address.
-* `:mdns_domain` Set the host part to the value advertised by mDNS
+* `:mdns_domain` Set the host part to the value advertised by mDNS.
 
 The default is `:mdns_domain` so that the following remsh invocation works:
 

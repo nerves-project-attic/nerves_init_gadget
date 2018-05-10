@@ -47,11 +47,30 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   defp init_mdns(mdns_domain) do
     Mdns.Server.add_service(%Mdns.Server.Service{
-      domain: mdns_domain,
+      domain: resolve_mdns_name(mdns_domain),
       data: :ip,
       ttl: 120,
       type: :a
     })
+  end
+
+  defp resolve_mdns_name(nil), do: nil
+
+  defp resolve_mdns_name(:hostname) do
+    {:ok, hostname} = :inet.gethostname()
+
+    to_dot_local_name(hostname)
+  end
+
+  defp resolve_mdns_name(mdns_name), do: mdns_name
+
+  defp to_dot_local_name(name) do
+    # Use the first part of the domain name and concatenate '.local'
+    name
+    |> to_string()
+    |> String.split(".")
+    |> hd()
+    |> Kernel.<>(".local")
   end
 
   defp update_mdns(_ip, nil), do: :ok
@@ -108,7 +127,7 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, _ip)
        when host != nil do
-    to_node_name(name, host)
+    to_node_name(name, resolve_mdns_name(host))
   end
 
   defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, ip)
