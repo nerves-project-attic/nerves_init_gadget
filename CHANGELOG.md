@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.0
+
+* New features
+  * Added support for `ssh`-ing to an IEx prompt. To use this, add:
+    `ssh_console_port: 22` to your `nerves_init_gadget` configuration.
+  * Added an option for generating more unique mDNS names. If you specify
+    `:hostname` for the `:mdns_domain` option, it will generate the `.local`
+    name from the hostname. This lets you have names like `nerves-1234.local`
+    being advertised on the network.
+
 ## v0.3.0
 
 * New features
