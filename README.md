@@ -316,6 +316,7 @@ This is the host part of the node name when using Erlang distribution. You may
 specify a string to use as a host name or one of the following atoms:
 
 * `:ip` - Set the host part to `:ifname`'s assigned IP address.
+* `:dhcp` - Set the host part to the host name registered by dhcp.
 * `:mdns_domain` Set the host part to the value advertised by mDNS.
 
 The default is `:mdns_domain` so that the following remsh invocation works:
