@@ -121,8 +121,19 @@ defmodule Nerves.InitGadget.NetworkManager do
     make_node_name(opts, "fake.ip") != nil
   end
 
+  defp resolve_dhcp_name() do
+    {:ok, hostname} = :inet.gethostname()
+    {:ok, {:hostent, dhcp_name, _, _, _, _}} = :inet.gethostbyname(hostname)
+
+    dhcp_name
+  end
+
   defp make_node_name(%{node_name: name, node_host: :ip}, ip) do
     to_node_name(name, ip)
+  end
+
+  defp make_node_name(%{node_name: name, node_host: :dhcp}, ip) do
+    to_node_name(name, resolve_dhcp_name())
   end
 
   defp make_node_name(%{node_name: name, node_host: :mdns_domain, mdns_domain: host}, _ip)
