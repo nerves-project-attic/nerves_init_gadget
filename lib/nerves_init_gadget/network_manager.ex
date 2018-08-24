@@ -18,7 +18,13 @@ defmodule Nerves.InitGadget.NetworkManager do
     SystemRegistry.register()
 
     # Initialize networking
-    Nerves.Network.setup(opts.ifname, ipv4_address_method: opts.address_method)
+    network_opts =
+      :nerves_network
+      |> Application.get_env(:default, [])
+      |> Keyword.get(to_atom(opts.ifname), [])
+      |> Keyword.put(:ipv4_address_method, opts.address_method)
+
+    Nerves.Network.setup(opts.ifname, network_opts)
     init_mdns(opts.mdns_domain)
     init_net_kernel(opts)
 
@@ -60,6 +66,9 @@ defmodule Nerves.InitGadget.NetworkManager do
   end
 
   defp resolve_mdns_name(mdns_name), do: mdns_name
+
+  defp to_atom(value) when is_atom(value), do: value
+  defp to_atom(value) when is_binary(value), do: String.to_atom(value)
 
   defp to_dot_local_name(name) do
     # Use the first part of the domain name and concatenate '.local'
