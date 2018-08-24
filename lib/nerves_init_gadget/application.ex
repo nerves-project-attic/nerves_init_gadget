@@ -2,17 +2,17 @@ defmodule Nerves.InitGadget.Application do
   @moduledoc false
 
   use Application
+  alias Nerves.InitGadget
 
   def start(_type, _args) do
-    config_opts = Map.new(Application.get_all_env(:nerves_init_gadget))
-    merged_opts = Map.merge(%Nerves.InitGadget.Options{}, config_opts)
+    opts = InitGadget.Options.get()
 
     children = [
-      {Nerves.InitGadget.NetworkManager, merged_opts},
-      {Nerves.InitGadget.SSHConsole, merged_opts}
+      {InitGadget.NetworkManager, opts},
+      {InitGadget.SSHConsole, opts}
     ]
 
-    opts = [strategy: :one_for_one, name: Nerves.InitGadget.Supervisor]
+    opts = [strategy: :one_for_one, name: InitGadget.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
