@@ -6,7 +6,7 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   defmodule State do
     @moduledoc false
-    defstruct ip: nil, opts: nil
+    defstruct ip: nil, is_up: nil, opts: nil
   end
 
   def start_link(opts) do
@@ -17,7 +17,77 @@ defmodule Nerves.InitGadget.NetworkManager do
     # Register for updates from system registry
     SystemRegistry.register()
 
-    # Initialize networking
+    state =
+      %State{opts: opts}
+      |> force_network_setup(opts)
+      |> init_mdns(opts)
+      |> init_net_kernel(opts)
+
+    {:ok, state}
+  end
+
+  def handle_info({:system_registry, :global, registry}, state) do
+    {changed, new_state} = update_state(state, registry)
+
+    case changed do
+      :up -> handle_if_up(new_state)
+      :down -> handle_if_down(new_state)
+      _ -> :ok
+    end
+
+    {:noreply, new_state}
+  end
+
+  defp update_state(%{opts: %{address_method: :dhcpd}} = state, registry) do
+    # Trigger off `:is_lower_up`. The "lower" comes up after a delay on some
+    # interfaces. If things are configured before the "lower" is up then
+    # packets down get received. This results in weird behavior like the DHCP
+    # server not receiving anything until a packet gets sent.
+    new_is_up = get_in(registry, [:state, :network_interface, state.opts.ifname, :is_lower_up])
+
+    case {new_is_up == state.is_up, new_is_up} do
+      {true, _} -> {:unchanged, state}
+      {false, true} -> {:up, %{state | is_up: true}}
+      {false, _is_up} -> {:down, %{state | is_up: new_is_up}}
+    end
+  end
+
+  defp update_state(state, registry) do
+    new_ip = get_in(registry, [:state, :network_interface, state.opts.ifname, :ipv4_address])
+
+    case {new_ip == state.ip, new_ip} do
+      {true, _} -> {:unchanged, state}
+      {false, nil} -> {:down, %{state | ip: nil, is_up: false}}
+      {false, _ip} -> {:up, %{state | ip: new_ip, is_up: true}}
+    end
+  end
+
+  defp force_network_setup(state, %{address_method: :dhcpd} = opts) do
+    # Use the IP address calculated by OneDHCPD with Nerves.Network.
+    our_ip =
+      OneDHCPD.default_ip_address(opts.ifname)
+      |> :inet.ntoa()
+      |> to_string()
+
+    subnet_mask =
+      OneDHCPD.default_subnet_mask()
+      |> :inet.ntoa()
+      |> to_string()
+
+    network_opts =
+      :nerves_network
+      |> Application.get_env(:default, [])
+      |> Keyword.get(to_atom(opts.ifname), [])
+      |> Keyword.put(:ipv4_address_method, :static)
+      |> Keyword.put(:ipv4_address, our_ip)
+      |> Keyword.put(:ipv4_subnet_mask, subnet_mask)
+
+    Nerves.Network.setup(opts.ifname, network_opts)
+
+    %{state | ip: our_ip}
+  end
+
+  defp force_network_setup(state, opts) do
     network_opts =
       :nerves_network
       |> Application.get_env(:default, [])
@@ -25,36 +95,43 @@ defmodule Nerves.InitGadget.NetworkManager do
       |> Keyword.put(:ipv4_address_method, opts.address_method)
 
     Nerves.Network.setup(opts.ifname, network_opts)
-    init_mdns(opts.mdns_domain)
-    init_net_kernel(opts)
-
-    {:ok, %State{opts: opts}}
+    state
   end
 
-  def handle_info({:system_registry, :global, registry}, state) do
-    new_ip = get_in(registry, [:state, :network_interface, state.opts.ifname, :ipv4_address])
-    handle_ip_update(state, new_ip)
+  # Workaround for static IP
+  defp handle_if_up(%{opts: %{address_method: :dhcpd}} = state) do
+    Logger.debug("#{state.opts.ifname} is up. IP is #{state.ip}")
+
+    OneDHCPD.start_server(state.opts.ifname)
+    update_mdns(state.ip, state.opts.mdns_domain)
+    update_net_kernel(state.ip, state.opts)
   end
 
-  # New IP address is same as current IP address
-  defp handle_ip_update(%{ip: ip} = state, ip), do: {:noreply, state}
+  defp handle_if_up(state) do
+    Logger.debug("#{state.opts.ifname} is up. IP is now #{state.ip}")
 
-  defp handle_ip_update(state, new_ip) do
-    Logger.debug("IP address for #{state.opts.ifname} changed to #{new_ip}")
-    update_mdns(new_ip, state.opts.mdns_domain)
-    update_net_kernel(new_ip, state.opts)
-    {:noreply, %State{state | ip: new_ip}}
+    update_mdns(state.ip, state.opts.mdns_domain)
+    update_net_kernel(state.ip, state.opts)
   end
 
-  defp init_mdns(nil), do: :ok
+  defp handle_if_down(%{address_method: :dhcpd} = state) do
+    Logger.debug("#{state.opts.ifname} is down.")
+    OneDHCPD.stop_server(state.opts.ifname)
+  end
 
-  defp init_mdns(mdns_domain) do
+  defp handle_if_down(_state), do: :ok
+
+  defp init_mdns(state, %{mdns_domain: nil}), do: state
+
+  defp init_mdns(state, opts) do
     Mdns.Server.add_service(%Mdns.Server.Service{
-      domain: resolve_mdns_name(mdns_domain),
+      domain: resolve_mdns_name(opts.mdns_domain),
       data: :ip,
       ttl: 120,
       type: :a
     })
+
+    state
   end
 
   defp resolve_mdns_name(nil), do: nil
@@ -94,10 +171,12 @@ defmodule Nerves.InitGadget.NetworkManager do
     Mdns.Server.set_ip(ip_tuple)
   end
 
-  defp init_net_kernel(opts) do
+  defp init_net_kernel(state, opts) do
     if erlang_distribution_enabled?(opts) do
       :os.cmd('epmd -daemon')
     end
+
+    state
   end
 
   defp update_net_kernel(ip, opts) do

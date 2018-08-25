@@ -43,6 +43,7 @@ defmodule Nerves.InitGadget.MixProject do
       {:nerves_firmware_ssh, "~> 0.2"},
       {:mdns, "~> 1.0"},
       {:ring_logger, "~> 0.4"},
+      {:one_dhcpd, "~> 0.1"},
       {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
     ]
   end
