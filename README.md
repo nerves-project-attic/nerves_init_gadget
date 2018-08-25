@@ -88,11 +88,12 @@ config :nerves_firmware_ssh,
   ]
 ```
 
-By itself, this does not allow you to log into your device using `ssh`. This is
-only for sending firmware updates to the device. (The `ssh` protocol is really
-cool and lets you do more than just connect to shells.) If you'd like to connect
-to the IEx prompt, see the [:ssh_console_port](#ssh_console_port) configuration
-option.
+These keys also let you log into your Nerves device and get an IEx prompt.  See
+the [:ssh_console_port](#ssh_console_port) configuration option.
+
+IEx prompt access and firmware updates use completely separate modules and TCP
+ports. Prompt access is via the normal `ssh` port (port 22). Firmware updates
+use the `ssh` protocol but on port 8989.
 
 The last change to the `config.exs` is to replace the default Elixir logger with
 [ring_logger](https://github.com/nerves-project/ring_logger). Eventually you may
@@ -327,11 +328,11 @@ iex --name me@0.0.0.0 --cookie acookie --remsh node_name@nerves.local
 
 ### `:ssh_console_port`
 
-If specified (non-nil), `nerves_init_gadget` will start an IEx console on the
-specified port. This console will use the same ssh public keys as those
-configured for `:nerves_firmware_ssh`. For example, if you set
-`ssh_console_port: 22`, rebuild and update the firmware. Usernames are ignored,
-so you can ssh to the device just by running:
+By default, `nerves_init_gadget` will start an IEx console on port 22 or
+whatever port is specified with this option. To disable this feature, set
+`:ssh_console_port` to `nil`.  This console will use the same ssh public keys as
+those configured for `:nerves_firmware_ssh`. Usernames are ignored. Connect by
+running:
 
 ```bash
 ssh nerves.local
@@ -339,8 +340,7 @@ ssh nerves.local
 
 To exit the SSH session, type `~.`. This is an `ssh` escape sequence (See the
 [ssh man page](https://linux.die.net/man/1/ssh) for other escape sequences).
-Typing `Ctrl+D` or `logoff` at the IEx prompt to exit the session aren't
-implemented.
+Typing `Ctrl+D` or `logoff` at the IEx prompt to exit the session won't work.
 
 ## Troubleshooting
 
