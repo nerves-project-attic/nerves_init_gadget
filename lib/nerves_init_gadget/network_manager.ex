@@ -82,7 +82,7 @@ defmodule Nerves.InitGadget.NetworkManager do
   defp update_mdns(_ip, nil), do: :ok
 
   defp update_mdns(ip, _mdns_domain) do
-    ip_tuple = to_ip_tuple(ip)
+    ip_tuple = string_to_ip(ip)
     Mdns.Server.stop()
 
     # Give the interface time to settle to fix an issue where mDNS's multicast
@@ -116,11 +116,9 @@ defmodule Nerves.InitGadget.NetworkManager do
     end
   end
 
-  defp to_ip_tuple(str) do
-    str
-    |> String.split(".")
-    |> Enum.map(&String.to_integer/1)
-    |> List.to_tuple()
+  defp string_to_ip(s) do
+    {:ok, ip} = :inet.parse_address(to_charlist(s))
+    ip
   end
 
   defp erlang_distribution_enabled?(opts) do
