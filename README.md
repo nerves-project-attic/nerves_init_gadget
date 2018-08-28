@@ -8,13 +8,15 @@ things that make using Nerves a little better. At some point your project may
 outgrow `nerves_init_gadget` and when that happens, you can use it as an
 example.
 
-By design, this project is mostly dependences and only a little bit of "glue"
-code. Here's a summary of what you get:
+By design, this project is mostly dependences and only a little "glue" code.
+Here's a summary of what you get:
 
-* Link-local networking for devices that can connect via a USB gadget interface
-  like the Raspberry Pi Zero and Beaglebone boards.
-* mDNS support to advertise a name like `nerves.local`
-* Device detection, filesystem mounting, and basic device control from `nerves_runtime`
+* Basic network initialization for USB gadget devices (Raspberry Pi Zero and
+  Beaglebone) and wired and wireless Ethernet
+* mDNS support to advertise a name like `nerves.local` or `nerves-1234.local` if
+  devices have serial numbers
+* Device detection, filesystem mounting, and basic device control from
+  `nerves_runtime`
 * Over-the-air firmware updates using `nerves_firmware_ssh`
 * Easy setup of Erlang distribution to support remsh, Observer and other debug
   and tracing tools
@@ -27,12 +29,11 @@ code. Here's a summary of what you get:
 
 ## Installation for a new project
 
-If you already have a project that uses Nerves, then see the next section.
+To modify an existing Nerves project, please see the next section.
 
-First, it's always useful to refer back to the [Nerves Project Getting Started
-instructions](https://hexdocs.pm/nerves/getting-started.html). These
-instructions skip platform-specific installation steps and assume that you've
-used Nerves at least once before.
+If you haven't set up your environment for Nerves, go to the [Nerves Project
+Installation instructions](https://hexdocs.pm/nerves/installation.html) and come
+back.
 
 Make sure that your Nerves archive is up-to-date. The Nerves archive contains
 the new project generator:
@@ -47,68 +48,47 @@ mix archive.install hex nerves_bootstrap
 Create a new project using the generator:
 
 ```sh
-mix nerves.new mygadget
+mix nerves.new mygadget --init-gadget
 ```
 
-Add `nerves_init_gadget` to the deps in the `mix.exs`:
+The defaults should work for most people. However, it's good to check.
 
-```elixir
-  defp deps(target) do
-    [
-      {:nerves_runtime, "~> 0.4"},
-      {:nerves_init_gadget, "~> 0.3"}
-    ] ++ system(target)
-  end
-```
-
-Now add `nerves_init_gadget` to the list of applications to always start. If you
-haven't used `shoehorn` before, it separates the application initialization
-into phases to isolate failures. This lets us ensure that `nerves_init_gadget`
-runs even if we messed up something in our application code. It's useful during
-development so that you can send firmware updates to devices with broken
-software. Take a look at your `config/config.exs` and edit the `:shoehorn`
-config to look something like this:
-
-```elixir
-config :shoehorn,
-  init: [:nerves_runtime, :nerves_init_gadget],
-  app: Mix.Project.config()[:app]
-```
-
-Next, set up the ssh authorized keys for pushing firmware updates to the device.
-This is documented in more detail at
-[nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh). The
-following fragment inserts your `id_rsa.pub` at compile time, but you can also
-copy/paste the keys.
-
-```elixir
-config :nerves_firmware_ssh,
-  authorized_keys: [
-    File.read!(Path.join(System.user_home!, ".ssh/id_rsa.pub"))
-  ]
-```
-
-These keys also let you log into your Nerves device and get an IEx prompt.  See
-the [:ssh_console_port](#ssh_console_port) configuration option.
+Open up `config/config.exs` and look for the ssh key section. If the device
+doesn't have your ssh public key installed, then firmware updates and ssh
+console access won't work. The default operation is to insert the contents of
+`~/.ssh/id_rsa.pub`. You can add as many public keys as you'd like or copy/paste
+them manually into the list. See
+[nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for more
+details.
 
 IEx prompt access and firmware updates use completely separate modules and TCP
 ports. Prompt access is via the normal `ssh` port (port 22). Firmware updates
 use the `ssh` protocol but on port 8989.
 
-The last change to the `config.exs` is to replace the default Elixir logger with
-[ring_logger](https://github.com/nerves-project/ring_logger). Eventually you may
-want to persist logs or send them to a server, but for now this keeps them
-around in memory so that you can review them even if you're not connected when
-the messages are sent.
+The next section to review is the `nerves_init_gadget` configuration. This one
+depends on the device that you're using. The most important configuration key is
+`ifname`. Set that to the Ethernet interface for your device. For the Raspberry
+Pi Zero and Beaglebone Black, `"usb0"` is a virtual Ethernet device going over
+USB. For other boards, `"eth0"` is the wired Ethernet interface and `"wlan0"` is
+the Wireless interface.
 
-```elixir
-config :logger, backends: [RingLogger]
-```
+The next key is the `address_method`. If using `"usb0"`, your choices are
+`:linklocal` or `:dhcpd`. The former configures the device with a [link-local
+address](https://en.wikipedia.org/wiki/Link-local_address) and the latter
+configures a static IP address and starts a DHCP server that gives an address to
+your computer. We're having better luck with DHCP than link-local support on
+laptops. If you're using a wired or wireless Ethernet interface, you can use
+`:linklocal` or `:dhcpd` if you'd like or you can use `:dhcp` to have your
+device get it's own IP address. The configuration is done via `nerves_network`
+so when you start getting too fancy, you may need to consult the documentation
+there.
+
+See the [configuration](#configuration) section below for the other parameters.
 
 Finally, run the usual Elixir and Nerves build steps:
 
 ```sh
-# Modify for your board
+# Modify the target name for your board. See the mix.exs for the options
 export MIX_TARGET=rpi0
 
 mix deps.get
@@ -142,15 +122,15 @@ virtual Ethernet adapter and virtual serial port on the target. The official
 `nerves_system_rpi0` does this.
 
 This project works well with
-[shoehorn](https://github.com/nerves-project/shoehorn). It's not mandatory,
-but it's pretty convenient since it can handle your application crashing during
+[shoehorn](https://github.com/nerves-project/shoehorn). It's not mandatory, but
+it's pretty convenient since it can handle your application crashing during
 development without forcing you to re-burn an SDCard. Since other instructions
 assume that it's around, update your `mix.exs` deps with it too:
 
 ```elixir
 def deps do
   [
-    {:shoehorn, "~> 0.2"},
+    {:shoehorn, "~> 0.4"},
     {:nerves_init_gadget, "~> 0.3"}
   ]
 end
@@ -175,12 +155,13 @@ config :shoehorn,
   app: Mix.Project.config()[:app]
 ```
 
-The final configuration item is to set up authorized keys for pushing
-firmware updates to the device. This is documented in more detail at
+The final configuration item is to set up authorized keys for pushing firmware
+updates to the device. This is documented in more detail at
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh).
 Basically, the device will need to know the `ssh` public keys for all of the
 users that are allowed to update the firmware. Copy the contents of the
-`id_rsa.pub`, etc.  files from your `~/.ssh` directory or add something like this:
+`id_rsa.pub`, etc.  files from your `~/.ssh` directory or add something like
+this:
 
 ```elixir
 config :nerves_firmware_ssh,
@@ -198,8 +179,8 @@ logger or a logger of your choosing if you'd like.
 config :logger, backends: [RingLogger]
 ```
 
-That's it! Now you can do the normal Nerves development procedure for building and
-installing the image to your device:
+That's it! Now you can do the normal Nerves development procedure for building
+and installing the image to your device:
 
 ```sh
 export MIX_TARGET=rpi0  # modify if necessary
@@ -215,8 +196,8 @@ mix firmware.burn
 
 ## Using
 
-Connect your device over the USB port with your computer (if using a RPi0, it
-is very important to use the port labeled "USB" and not the one labeled "PWR").
+Connect your device over the USB port with your computer (if using a RPi0, it is
+very important to use the port labeled "USB" and not the one labeled "PWR").
 Give your device a few seconds to boot and initialize the virtual Ethernet
 interface going through the USB cable. On your computer, run `ping` to see that
 it's working:
@@ -244,17 +225,17 @@ MIX_TARGET=rpi0 mix firmware.push nerves.local
 Change `MIX_TARGET` to whatever you're using to build the firmware.  Assuming
 everything completes successfully, the device will reboot with the new firmware.
 
-If you have a password-protected `ssh` private key, `mix firmware.push` currently
-isn't able to prompt for the password or use the `ssh-agent`. This means that you
-either need to pass your password in cleartext on the commandline (ugh), create
-a new public/private key pair, or use commandline `ssh`. For commandline `ssh`,
-take a look at the `upload.sh` script from
+If you have a password-protected `ssh` private key, `mix firmware.push`
+currently isn't able to prompt for the password or use the `ssh-agent`. This
+means that you either need to pass your password in cleartext on the commandline
+(ugh), create a new public/private key pair, or use commandline `ssh`. For
+commandline `ssh`, take a look at the `upload.sh` script from
 [nerves_firmware_ssh](https://github.com/fhunleth/nerves_firmware_ssh) for an
 example.
 
-If you have your private key stored in a file with a different name than `id_dsa`,
-`id_rsa`, or `identity`, chances are that `mix firmware push` will not find them.
-Use `upload.sh` in this case as well.
+If you have your private key stored in a file with a different name than
+`id_dsa`, `id_rsa`, or `identity`, chances are that `mix firmware push` will not
+find them.  Use `upload.sh` in this case as well.
 
 ## Configuration
 
@@ -285,9 +266,15 @@ details.
 
 ### `:address_method`
 
-This sets how an IP address should be assigned to the network interface. If
-using anything but `:linklocal` and `:dhcp`, you'll need to configure defaults
-on `nerves_network` to set other parameters.
+This sets how an IP address should be assigned to the network interface. You may
+specify the following:
+
+* `:linklocal` - assign a link-local IP address
+* `:dhcp` - send a DHCP discovery request on the network to get assigned an IP
+  address
+* `:dhcpd` - set an automatically calculated IP address and start a DHCP server
+  to assign an address to the other side of the link. See
+  [OneDHCPD](https://github.com/fhunleth/one_dhcpd)
 
 ### `:mdns_domain`
 
