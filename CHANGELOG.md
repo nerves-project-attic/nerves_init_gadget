@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.5.0
+
+* New features
+  * When using Erlang distribution, the node's hostname can be set to the name
+    returned by DHCP: `node_host: :dhcp`
+  * SSH console access is enabled by default now. Disable by setting
+    `ssh_console_port: nil`
+  * To address issues with link-local networking, it's now possible to run a
+    mini DHCP server to supply an IP address instead. Enable by setting
+   `address_method: :dhcpd`.  See
+   [OneDHCPD](https://github.com/fhunleth/one_dhcpd) for more information.
+
+* Bug fixes
+  * Merge `default` configs from `nerves_network`. This fixes an issue where
+    `wlan0` settings were lost.
+
 ## v0.4.0
 
 * New features
