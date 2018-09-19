@@ -20,7 +20,7 @@ Here's a summary of what you get:
 * Over-the-air firmware updates using `nerves_firmware_ssh`
 * Easy setup of Erlang distribution to support remsh, Observer and other debug
   and tracing tools
-* Access to the IEx console via `ssh`
+* Access to the IEx console via `ssh` and transfer files with `sftp`
 * IEx helpers for a happier commandline experience
 * Logging via [ring_logger](https://github.com/nerves-project/ring_logger)
 * [shoehorn](https://github.com/nerves-project/shoehorn)-aware instructions to
@@ -316,10 +316,11 @@ iex --name me@0.0.0.0 --cookie acookie --remsh node_name@nerves.local
 ### `:ssh_console_port`
 
 By default, `nerves_init_gadget` will start an IEx console on port 22 or
-whatever port is specified with this option. To disable this feature, set
-`:ssh_console_port` to `nil`.  This console will use the same ssh public keys as
-those configured for `:nerves_firmware_ssh`. Usernames are ignored. Connect by
-running:
+whatever port is specified with this option. The SFTP subsystem is also enabled
+so that you can transfer files back and forth as well. To disable this feature,
+set `:ssh_console_port` to `nil`.  This console will use the same ssh public
+keys as those configured for `:nerves_firmware_ssh`. Usernames are ignored.
+Connect by running:
 
 ```bash
 ssh nerves.local

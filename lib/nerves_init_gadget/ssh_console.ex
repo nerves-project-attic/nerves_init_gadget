@@ -38,7 +38,8 @@ defmodule Nerves.InitGadget.SSHConsole do
         {:id_string, :random},
         {:key_cb, {Nerves.Firmware.SSH.Keys, cb_opts}},
         {:system_dir, Nerves.Firmware.SSH.Application.system_dir()},
-        {:shell, {Elixir.IEx, :start, []}}
+        {:shell, {Elixir.IEx, :start, []}},
+        {:subsystems, [:ssh_sftpd.subsystem_spec(cwd: '/')]}
       ])
 
     ssh
