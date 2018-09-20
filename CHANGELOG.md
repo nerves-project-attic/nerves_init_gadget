@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.1
+
+* New features
+  * SFTP support
+
 ## v0.5.0
 
 * New features
