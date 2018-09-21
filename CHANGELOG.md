@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.2
+
+* Enhancements
+  * Use `:dhcpd` instead of `:linklocal` for defaults.
+  * Load `/etc/iex.exs` on ssh connections
+
 ## v0.5.1
 
 * New features
