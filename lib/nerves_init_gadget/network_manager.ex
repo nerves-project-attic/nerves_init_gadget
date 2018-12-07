@@ -92,7 +92,7 @@ defmodule Nerves.InitGadget.NetworkManager do
       :nerves_network
       |> Application.get_env(:default, [])
       |> Keyword.get(to_atom(opts.ifname), [])
-      |> Keyword.put(:ipv4_address_method, opts.address_method)
+      |> Keyword.put_new(:ipv4_address_method, opts.address_method)
 
     Nerves.Network.setup(opts.ifname, network_opts)
     state
