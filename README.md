@@ -194,6 +194,29 @@ mix firmware
 mix firmware.burn
 ```
 
+## USB Gadget Devices
+
+By default, `nerves_init_gadget` attempts to use the [`usb_gaget`] library to
+configure the following devices:
+
+1. RNDIS Ethernet interface (`usb0`)
+2. ECM Ethernet interface (`usb1`)
+3. ACM Serial interface (`ttyGS0`)
+
+The reason that there are two Ethernet devices is that the first device
+(`usb0`) uses an RNDIS driver, which interoperates with Windows-based hosts.
+The second device (`usb1`) uses an ECM driver, which interoperates with Linux-
+and OSX-based hosts. `nerves_init_gadget` also configures Ethernet bonding
+between these two devices, allowing you to treat them as a single `bond0`
+interface that will automatically use the appropriate underlying device to
+connect to the host.
+
+Using the [`usb_gadget`] library, you can also configure a variety of other USB
+gadget devices, or customize the devices configured by default in
+`nerves_init_gadget`.
+
+[`usb_gadget`]: https://github.com/nerves-project/usb_gadget
+
 ## Using
 
 Connect your device over the USB port with your computer (if using a RPi0, it is

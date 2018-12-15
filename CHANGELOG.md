@@ -1,5 +1,12 @@
 # Changelog
 
+## vNEXT
+
+* New features
+  * Support for configuration of usb gadget devices using the
+    [`usb_gadget`](https://github.com/nerves-project/usb_gadget) library (when
+    using a compatible Nerves system).
+
 ## v0.5.2
 
 * Enhancements

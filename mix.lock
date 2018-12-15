@@ -16,4 +16,5 @@
   "ring_logger": {:hex, :ring_logger, "0.5.0", "dcf9455914c1969b2d55cacb7d37fc9e4ac02d65b1c3de8135c531497f8aed51", [:mix], [], "hexpm"},
   "socket": {:hex, :socket, "0.3.13", "98a2ab20ce17f95fb512c5cadddba32b57273e0d2dba2d2e5f976c5969d0c632", [:mix], [], "hexpm"},
   "system_registry": {:hex, :system_registry, "0.8.0", "09240347628b001433d18279a2759ef7237ba7361239890d8c599cca9a2fbbc2", [:mix], [], "hexpm"},
+  "usb_gadget": {:git, "https://github.com/nerves-project/usb_gadget.git", "610fff11d74e1e87a560a15f0487de2a99290d13", [ref: "master"]},
 }

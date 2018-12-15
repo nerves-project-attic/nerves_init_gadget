@@ -44,7 +44,8 @@ defmodule Nerves.InitGadget.MixProject do
       {:mdns, "~> 1.0"},
       {:ring_logger, "~> 0.4"},
       {:one_dhcpd, "~> 0.1"},
-      {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false}
+      {:ex_doc, "~> 0.19", only: [:dev, :test], runtime: false},
+      {:usb_gadget, github: "nerves-project/usb_gadget", ref: "master"},
     ]
   end
 end

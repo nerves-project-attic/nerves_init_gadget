@@ -1,8 +1,9 @@
 defmodule Nerves.InitGadget do
   @moduledoc """
-  `nerves_init_gadget` adds a basic level of setup for Nerves devices with USB gadget mode
-  interfaces like the Raspberry Pi Zero. Here are some features:
+  `nerves_init_gadget` adds a basic level of setup for Nerves devices with USB
+  gadget mode interfaces like the Raspberry Pi Zero. Here are some features:
 
+  * Initialize USB gadget devices using configfs
   * Automatically sets up link-local networking on the USB interface. No DHCP or
     static IP setup is needed on the host laptop
   * Sets up mDNS to respond to lookups for `nerves.local`

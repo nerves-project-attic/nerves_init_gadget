@@ -8,6 +8,7 @@ defmodule Nerves.InitGadget.Application do
     opts = InitGadget.Options.get()
 
     children = [
+      {InitGadget.GadgetDevices, opts},
       {InitGadget.NetworkManager, opts},
       {InitGadget.SSHConsole, opts}
     ]
