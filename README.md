@@ -131,7 +131,7 @@ assume that it's around, update your `mix.exs` deps with it too:
 def deps do
   [
     {:shoehorn, "~> 0.4"},
-    {:nerves_init_gadget, "~> 0.3"}
+    {:nerves_init_gadget, "~> 0.5"}
   ]
 end
 ```
