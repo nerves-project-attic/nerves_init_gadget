@@ -64,13 +64,15 @@ defmodule Nerves.InitGadget.NetworkManager do
 
   defp force_network_setup(state, %{address_method: :dhcpd} = opts) do
     # Use the IP address calculated by OneDHCPD with Nerves.Network.
+    subnet = OneDHCPD.IPCalculator.default_subnet(opts.ifname)
+
     our_ip =
-      OneDHCPD.default_ip_address(opts.ifname)
+      OneDHCPD.IPCalculator.our_ip_address(subnet)
       |> :inet.ntoa()
       |> to_string()
 
     subnet_mask =
-      OneDHCPD.default_subnet_mask()
+      OneDHCPD.IPCalculator.mask()
       |> :inet.ntoa()
       |> to_string()
 
@@ -83,6 +85,11 @@ defmodule Nerves.InitGadget.NetworkManager do
       |> Keyword.put(:ipv4_subnet_mask, subnet_mask)
 
     Nerves.Network.setup(opts.ifname, network_opts)
+
+    # Update Erlang's DNS resolver so that the IP addresses given out
+    # can be referred to by name.
+    :inet_db.add_host(OneDHCPD.IPCalculator.our_ip_address(subnet), ['local.#{opts.ifname}.lan'])
+    :inet_db.add_host(OneDHCPD.IPCalculator.their_ip_address(subnet), ['peer.#{opts.ifname}.lan'])
 
     %{state | ip: our_ip}
   end

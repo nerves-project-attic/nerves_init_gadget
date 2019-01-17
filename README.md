@@ -273,8 +273,10 @@ specify the following:
 * `:dhcp` - send a DHCP discovery request on the network to get assigned an IP
   address
 * `:dhcpd` - set an automatically calculated IP address and start a DHCP server
-  to assign an address to the other side of the link. See
-  [OneDHCPD](https://github.com/fhunleth/one_dhcpd)
+  to assign an address to the other side of the link. Names are added to
+  Erlang's DNS so that you can refer to the computer on the other side of the link
+  as `peer.usb0.lan`. Substitute `usb0` for the interface if yours is different.
+  See [OneDHCPD](https://github.com/fhunleth/one_dhcpd).
 
 ### `:mdns_domain`
 
