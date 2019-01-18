@@ -1,7 +1,7 @@
 defmodule Nerves.InitGadget.MixProject do
   use Mix.Project
 
-  @version "0.5.2"
+  @version "0.6.0"
 
   @description """
   Simple initialization for devices running Nerves

@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.6.0
+
+* Enhancements
+  * Don't override IP address parameters if assigned in the `nerves_network`
+    config. This fixes confusion on which config wins with network configuration
+    since `nerves_init_gadget` does some configuration as a convenience. The
+    answer is that `nerves_network` wins.
+  * Register DNS hosts to get the local and peer IP addresses on USB gadget mode
+    connections. For example, if using `usb0`, then `peer.usb0.lan` refers to
+    the computer connected to the device (like your laptop)
+
 ## v0.5.2
 
 * Enhancements
