@@ -18,6 +18,8 @@ Here's a summary of what you get:
 * Device detection, filesystem mounting, and basic device control from
   `nerves_runtime`
 * Over-the-air firmware updates using `nerves_firmware_ssh`
+* System clock initialization and NTP support from
+  [nerves_time](https://github.com/fhunleth/nerves_time)
 * Easy setup of Erlang distribution to support remsh, Observer and other debug
   and tracing tools
 * Access to the IEx console via `ssh` and transfer files with `sftp`
