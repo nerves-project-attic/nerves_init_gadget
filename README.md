@@ -337,6 +337,13 @@ To exit the SSH session, type `~.`. This is an `ssh` escape sequence (See the
 [ssh man page](https://linux.die.net/man/1/ssh) for other escape sequences).
 Typing `Ctrl+D` or `logoff` at the IEx prompt to exit the session won't work.
 
+### `:ssh_user_password`
+
+The SSH console uses public key authentication by default, but it can be
+configured for usernames and passwords via the `:ssh_user_password` key. This
+has the form `[{"username", "password"}, ...]`. Keep in mind that passwords are
+stored in the clear. This is not recommended for most situations.
+
 ## Troubleshooting
 
 If things aren't working, try the following to figure out what's wrong:

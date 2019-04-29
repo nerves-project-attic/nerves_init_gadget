@@ -34,16 +34,29 @@ defmodule Nerves.InitGadget.SSHConsole do
     # Reuse the system_dir as well to allow for auth to work with the shared
     # keys.
     {:ok, ssh} =
-      :ssh.daemon(port, [
-        {:id_string, :random},
-        {:key_cb, {Nerves.Firmware.SSH.Keys, cb_opts}},
-        {:system_dir, Nerves.Firmware.SSH.Application.system_dir()},
-        {:shell, {Elixir.IEx, :start, [iex_opts]}},
-        {:subsystems, [:ssh_sftpd.subsystem_spec(cwd: '/')]}
-      ])
+      :ssh.daemon(port,
+        id_string: :random,
+        key_cb: {Nerves.Firmware.SSH.Keys, cb_opts},
+        system_dir: Nerves.Firmware.SSH.Application.system_dir(),
+        shell: {Elixir.IEx, :start, [iex_opts]},
+        subsystems: [:ssh_sftpd.subsystem_spec(cwd: '/')],
+        user_passwords: get_user_passwords()
+      )
 
     Process.link(ssh)
     ssh
+  end
+
+  defp get_user_passwords() do
+    case Application.get_env(:nerves_init_gadget, :ssh_user_passwords, []) do
+      user_passwords when is_list(user_passwords) ->
+        for {user, password} <- user_passwords do
+          {to_charlist(user), to_charlist(password)}
+        end
+
+      _other ->
+        []
+    end
   end
 
   defp find_iex_exs() do
