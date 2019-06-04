@@ -13,11 +13,16 @@ defmodule Nerves.InitGadget.SSHConsole do
 
   def init([opts]) do
     ssh = start_ssh(opts)
+    Process.flag(:trap_exit, true)
     {:ok, %{ssh: ssh, opts: opts}}
   end
 
   def terminate(_, %{ssh: ssh}) do
     :ssh.stop_daemon(ssh)
+  end
+
+  def handle_info({:EXIT, _from, _reason}, state) do
+    {:stop, :sshd_stopped, state}
   end
 
   defp start_ssh(%{ssh_console_port: port}) do
@@ -46,6 +51,7 @@ defmodule Nerves.InitGadget.SSHConsole do
         {:subsystems, [:ssh_sftpd.subsystem_spec(cwd: '/')]}
       ])
 
+    Process.link(ssh)
     ssh
   end
 
