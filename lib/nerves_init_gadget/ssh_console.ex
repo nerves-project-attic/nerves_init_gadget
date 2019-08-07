@@ -13,12 +13,7 @@ defmodule Nerves.InitGadget.SSHConsole do
 
   def init([opts]) do
     ssh = start_ssh(opts)
-    Process.flag(:trap_exit, true)
     {:ok, %{ssh: ssh, opts: opts}}
-  end
-
-  def terminate(_, %{ssh: ssh}) do
-    :ssh.stop_daemon(ssh)
   end
 
   def handle_info({:EXIT, _from, _reason}, state) do
