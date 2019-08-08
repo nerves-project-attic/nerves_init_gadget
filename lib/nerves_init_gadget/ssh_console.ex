@@ -16,10 +16,6 @@ defmodule Nerves.InitGadget.SSHConsole do
     {:ok, %{ssh: ssh, opts: opts}}
   end
 
-  def handle_info({:EXIT, _from, _reason}, state) do
-    {:stop, :sshd_stopped, state}
-  end
-
   defp start_ssh(%{ssh_console_port: port}) do
     # Reuse keys from `nerves_firmware_ssh` so that the user only needs one
     # config.exs entry.
