@@ -1,5 +1,6 @@
 # nerves_init_gadget
 
+[![CircleCI](https://circleci.com/gh/nerves-project/nerves_init_gadget.svg?style=svg)](https://circleci.com/gh/nerves-project/nerves_init_gadget)
 [![Hex version](https://img.shields.io/hexpm/v/nerves_init_gadget.svg "Hex version")](https://hex.pm/packages/nerves_init_gadget)
 
 This project provides the basics for getting started with Nerves. This includes
