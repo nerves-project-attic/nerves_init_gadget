@@ -3,6 +3,21 @@
 [![CircleCI](https://circleci.com/gh/nerves-project/nerves_init_gadget.svg?style=svg)](https://circleci.com/gh/nerves-project/nerves_init_gadget)
 [![Hex version](https://img.shields.io/hexpm/v/nerves_init_gadget.svg "Hex version")](https://hex.pm/packages/nerves_init_gadget)
 
+> IMPORTANT: This package is no longer maintained and should not be used in new
+> projects.
+>
+> See [`NervesPack`](https://github.com/nerves-project/nerves_pack) for getting
+> started quickly now. The Nerves new project generator (`mix nerves.new
+> my_project`) creates projects using `NervesPack`.
+>
+> Existing projects using this library are encouraged to upgrade to
+> `VintageNet`.
+>
+> Why did we change this? The reason is that we made significant improvements to
+> network configuration support and they were incompatible with
+> `nerves_init_gadget`. You can read about the new network library at
+> [`VintageNet`](https://github.com/nerves-networking/vintage_net)
+
 This project provides the basics for getting started with Nerves. This includes
 bringing up networking, over-the-air firmware updates and many other little
 things that make using Nerves a little better. At some point your project may
